@@ -1,0 +1,136 @@
+
+\chapter{Related Work}
+\label{ch:related}
+
+\instructions{Page budget for Related Work: 10 - 15 pages
+
+One of the most important papers out there for getting to know the field of fairness in machine learning is the survey paper by \citet{mehrabi2021survey}. This paper serves as a gateway to a lot of the current research in the field, a lot of which will be summarised in this section of the thesis.
+
+\subsection{Bias in Data}
+
+Some of the sources of bias have been discussed already in section \ref{ch:intro} but here we will go through more of them and in more detail. We have the following biases according to \citet{mehrabi2021survey}:
+
+\subsubsection{Historical Bias}
+
+Historical Bias is the already existing bias and socio-technical issues in the real word. These issues affect the data-generation process. So even given a perfect sampling method, the bias in the dataset will still exist. \cite{suresh2019framework}
+
+\subsubsection{Representation Bias}
+
+This is a bias that occurs due to the way the sample has been acquired. \cite{suresh2019framework} Data collection is a non-trivial task and sampling a diverse dataset across large geographical regions and taking into account diversity in terms of race, culture, gender etc will in many cases not be possible. Still, the dataset will suffer from not representing the true distributions in the population.
+
+\subsubsection{Measurement Bias}
+
+This source of bias originates in the way the particular features have been measured and utilised. \cite{suresh2019framework} An example of this would be to use salary as a feature to assess risk of defaulting on a loan. This feature will be biased towards women since women has historically experienced having lower salaries than men.
+
+\subsubsection{Population Bias}
+
+Population bias arises when the sampled population have different properties than the original target population. \cite{olteanu2019social} An example of this would be to sample data from different social media platforms, which have different user demographics. I.e men using reddit and women using instagram.
+
+And there are many other sources of bias and some of these are very hard to avoid. It is reasonable to assume that most available datasets today are biased, which makes the approach described in section \ref{sec:probmac} important.
+
+\subsection{Algorithmic Fairness}
+
+Discrimination has many different definitions, and while no gold-standard defintion exist, it is often defined as an absence of any prejudice or favouritism towards individuals or groups based on some intrinsic traits. \cite{mehrabi2021survey, nripsuta2019} This definitions is core in the many different mathematical definitions of fairness. Some of these are summarised below
+
+\textbf{Equalized Odds}: According to \citet{mehrabi2021survey, hardt2016} A predictor $\hat{Y}$ satisfies equalised odds with respect to a sensitive attribute $A$ and outcome $Y$ if $\hat{Y}$ and $A$ are conditionally independent on $Y$. i.e
+
+\begin{equation}
+    P(\hat{Y}|A=0, Y=y) = P(\hat{Y}|A=1, Y=y), y \in {0, 1}
+\end{equation}
+
+\textbf{Equal Opportunity}: According to \citet{mehrabi2021survey, hardt2016} A binary predictor $\hat{Y}$ satisfies equal opportunity with respect to $A$ and $Y$ if
+
+\begin{equation}
+    P(\hat{Y}=1|A=0, Y=1) = P(\hat{Y}=1|A=1, Y=1)
+\end{equation}
+
+\textbf{Demographic Parity}: According to \citet{mehrabi2021survey, dwork2012} A predictor $\hat{Y}$ satisfies demographic parity if 
+
+\begin{equation}
+    P(\hat{Y}|A=0) = P(\hat{Y}|A=1)
+\end{equation}
+
+And many more metrics exist. A challenge is that according to \citet{mehrabi2021survey, kleinberg2016inherent} it is impossible to satisfy some of these fairness constraints. One should therefore be considerate when using a certain metric. Synthesising these definitions to one gold-standard remains an open research question. For this thesis. Demographic parity is especially important as it is fundemental in the model described in section \ref{sec:probmac}.
+
+\subsection{Methods for Fair Machine Learning}
+
+Machine Learning is a large domain encompassing many sub-domains. These include \textit{Classification, Regression, PCA, Clustering, Deep Learning} and many more. In this thesis, the focus will be on fair classification. This is kind of an arbitrary choice but it has been chosen since a lot of real-world decision making processes are classification problems. 
+
+\textit{Fair Classification:} Some of the most important work in the field of fair classification summarised by \cite{mehrabi2021survey}. Some important previous work for this thesis is the Naive Bayes approach for fair classification by \citet{calders2010three} In this work the authors investigated how to modify the naive bayes classifier in order to perform classification that is restricted to be independent from the sensitive attributes. In this paper they measure discrimination by \textit{discrimination score} which is defined as
+
+\begin{equation}
+    P(C=+|S_+) - P(C=+|S_-)
+\end{equation}
+
+Which assumes that a classifier is fair if the outcome is independent of the sensitive attribute. i.e \textit{Demographic Parity} as described above. The main limitation of this paper is that the classifier on the non-sensitive attributes is a naive-bayes classifier. Which means it assumes that all the features are independent. This makes it one of the simplest bayesian networks out there as well as scalable since the number of parameters is scaled linearly with the number of features. This limitation is adressed further in section \ref{sec:probmac}.
+
+Other important works are the works of \cite{zafar2017} and \citet{dwork18}. \citet{zafar2017} introduced new notions on how to define fairness, arguing that the traditional parity based notion is  quite stringent, limiting the overall decision making accuracy. They tie in elements from envy-freeness literature in economics and game theory and propose preference-based notions of fairness. 
+
+\citet{dwork18} provide a simple and efficient decoupling technique, which can be added on top of any black-box machine learning algorithm, to learn different classifers for different groups. Transfer learning is used to mitigate the problem of having too little data on any one group.
+
+Important to this thesis is the work of \citet{choi2020} Which is a follow up paper to \cite{calders2010three}. They have generalised the limitation of the first paper where a naive-bayes classifier was necessary. Their framework can be generalised to any local probabilistic network. This will be discussed in more detail in section \ref{sec:probmac}
+
+\subsection{Probabilistic Machine Learning}
+\label{sec:probmac}
+
+In this thesis, we will focus on probabilistic machine learning, therefore a brief introduction to this field is in place. According to \citet{murphy2012machine} machine learning is usually divided into two main types. \textbf{Predictive} or \textbf{Supervised learning} approach \cite[p.~2]{murphy2012machine}, the goal is to learn a mapping from inputs $x$ to outputs $y$ given a labeled set of input-output pairs
+
+\begin{equation}
+    \mathcal{D} = {(x_i, y_i)}_{i=1}^N
+\end{equation}
+
+The second type is the \textbf{descriptive} or \textbf{unsupervised learning} where we are only given the data itself without labels
+
+\begin{equation}
+    \mathcal{D} = {x_i}_{i=1}^N
+\end{equation}
+
+here the goal is to find interesting patterns in the data that is inherent to the data itself without the need of labels. This problem is not as well defined as the predictive case and there is no obvious error metric. The third type is \textbf{reinforcement learning} where you let an agent explore a space and desired behaviour is rewarded through a performance or reward metric. 
+
+A common way to perform supervised learning is to treat  $y$ as a random variable and estimate a mapping 
+
+\begin{equation}
+    f: x \rightarrow y
+\end{equation}
+
+One example of this is Linear Regression. Which maps input vectors $x$ to outputs $y$ using the following mapping \cite[p.~19]{murphy2012machine}
+
+\begin{equation}
+    f: y = \mathbf{w}^Tx + \epsilon = \sum_{j=1}^N w_j x_j + \epsilon
+\end{equation}
+
+and often $\epsilon$ is assumed to be gaussian and the model can be rewritten as 
+
+\begin{equation}
+    p(y|x, \theta) = \mathcal{N}(y|\mu(x), \sigma^2(x))
+\end{equation}
+
+One common way to estimate the parameters of a statistical model is to calculate the maximum likelihood estimate of the model parameters \cite[p.~217]{murphy2012machine}
+
+\begin{equation}
+    \hat{\mathbf{\theta}} = \argmax_{\theta} \log p(\mathcal{D}|\theta)
+\end{equation}
+
+and for linear regression, minimising the sum of squared errors has an explicit solution \cite[p.~220]{murphy2012machine}
+
+\begin{equation}
+    \hat{\bf{w}}_{\text{OLS}} = (\bf{X}^T\bf{X})^{-1}\bf{X}^T\bf{y}
+\end{equation}
+
+
+\begin{itemize}
+    \item Discuss the relevant literature related with your problem, in a coherent way to demonstrate that you have given due consideration to know: your problem and the possible sub-problems of interest in this work, the previous approaches, and their benefits and missing points or drawbacks.
+    \item It is not about concatenating summaries of papers. Rather, it is about to discuss the problem, its details and challenges (difficulties and/or opportunities) you focus on, all this by relying on previous work, comparing what some did, what some else improved or added, what is missing, and so on.
+    \item Moreover, mind to keep the focus in the areas you care during your discussion (since you control the story), and to remark what you consider useful, interesting, or challenging.
+    \item In some cases it could be necessary and/or natural to have, first, an introduction (which could discuss works on more general aspects of the problem), and then split the rest of the chapter in sections, each discussing a particular aspect of the problem.
+    \item If you define a new task, or create or improve a method, or develop a test collection, or perform a missing major evaluation, explain why it is interesting, why is different or helpful versus previous works.
+    \item Mind that the reader may have never heard about these things. You need to discuss them in such detail that it is possible to follow later parts of the thesis without having to consult external resources.
+    \item Always use natbib!
+    \item Use \texttt{\textbackslash\.citet\{\}} for textual citation. For example, ``\citet{Balog:2018:Book} proposed...''
+    \item Use \texttt{\textbackslash\.citep\{\}} for parenthetical citation. For example, ``In \citep{Zhang:2020:KDD} the idea of ..''
+    \item Here is an example of a PhD thesis:  \citet{Maxwell:2019:PhDThesis} 
+    \item Here is how a Journal article would look in the Bibliography: \citet{Sanderson:2010:FnTIR}
+    \item Never write out Smith et al., there is a \texttt{\textbackslash\.citeauthor{}\{\}} command for that (but most likely what you're looking for is actually \texttt{\textbackslash\.citet\{\}}.
+    \item Check the corresponding Bib entry, for citing online documentation~\citep{Rasa:2022:doc}; if you just need to include an URL of a website/code/dataset, use a footnote instead.\footnote{\url{https://rasa.com}}
+\end{itemize}
+}
