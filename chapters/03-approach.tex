@@ -19,6 +19,170 @@
 %
 Name these themes based on the different components or sub-problems you are solving in your thesis.
 }
+
+\section{Data Exploration}
+
+For this thesis, exploration of approaches to achieve fairness and interpretability in machine learning algorithms is the goal. The Adult dataset \footnote{https://archive.ics.uci.edu/ml/datasets/adult} has been selected for this topic. Before beginning on implementing machine learning methods and experiments, some preliminary data exploration is in order.
+
+\subsection{The Dataset}
+
+The adult dataset is a dataset extracted by Barry Becker from the 1994 US Census database and the prediction task is to determine whether a person makes over 50k a year. It consists of the following attributes:
+
+\begin{itemize}
+    \item Age: The age of the individual (Positive integer)
+    \item Work class: The sector the individual works in (8 Categories)
+    \item fnlgwgt: A weight determined by the census bureau (Positive integer)
+    \item Education: Highest educational degree (16 categories)
+    \item Educaitional-num: Enumerated education (16 categories)
+    \item Marital Status: Marital status of individual (7 Categories)
+    \item Occupation: General type of occupation (15 categories)
+    \item Relationship: What kind of relationship the individual is to others (6 categories)
+    \item Race: What race the individual belongs to (6 Categories)
+    \item Gender: Biological sex of the individual (2 Categories)
+    \item Capital gain: Capital gain of individual (Positive integer)
+    \item Capital loss: Capital loss of the individual (Positive integer)
+    \item Native country: Native country of the individual (42 categories)
+    \item Income: Whether individual makes more than 50K or not (2 Categories)
+\end{itemize}
+
+This dataset consists of mostly categorical attributes which are not ordinal. This makes analysis quite challenging. Many models assumes Gaussian distributions which is not present in the dataset. In this dataset there is also some sensitive attributes, most notably \emph{Gender} and \emph{Race}. One could also argue that \emph{Marital Status} and \emph{Relationship} could also be sensitive attributes.
+
+In a fair machine learning system, we would expect that the outcome in terms of income does not depend on the race, gender, marital status or relationship or the very least that the decision by the model on the income is not based on sensitive attributes.
+
+\subsection{Attributes correlated with income}
+
+\begin{table}
+    \centering
+    \begin{tabular}{lr}
+        \toprule
+        Attribute &  Correlation \\
+        \midrule
+        marital-status.Never-married &    -0.318782 \\
+        relationship.Own-child       &    -0.225691 \\
+        relationship.Not-in-family   &    -0.190372 \\
+        occupation.Other-service     &    -0.155254 \\
+        relationship.Unmarried       &    -0.143642 \\
+        education.HS-grad            &    -0.130706 \\
+        race.Black                   &    -0.090448 \\
+        education.11th               &    -0.086728 \\
+        occupation.Adm-clerical      &    -0.086475 \\
+        relationship.Other-relative  &    -0.085601 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Features that are negatively correlated with income.}
+    \label{fig:negative_income_correaltion}
+\end{table}
+
+\begin{table}
+    \centering
+    \begin{tabular}{lr}
+        \toprule
+        Attribute &  Correlation \\
+        \midrule
+        education.Masters                 &     0.174184 \\
+        education.Bachelors               &     0.180371 \\
+        occupation.Prof-specialty         &     0.188793 \\
+        occupation.Exec-managerial        &     0.210938 \\
+        gender.Male                       &     0.214628 \\
+        capital-gain                      &     0.223013 \\
+        hours-per-week                    &     0.227687 \\
+        age                               &     0.230369 \\
+        marital-status.Married-civ-spouse &     0.445853 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Features that are positively correlated with income.}
+    \label{fig:positive_income_correaltion}
+\end{table}
+
+We see  in that there are some categories in the following attributes that are correalted with income
+
+\begin{itemize}
+    \item Marital Status
+    \item Age
+    \item Hours per week
+    \item Capital Gain
+    \item Occupation
+    \item Relationship
+    \item Education
+    \item Gender
+    \item Race
+\end{itemize}
+
+We observe that our identified sensitive attributes are correlated with income. The challenge now is that we have to learn a model that does not treat individuals belonging to different classes in the sensitive attribute unfairly.
+
+\section{Fair Bayesian Network}
+
+Based on the fair bayesian network described by \citet{Choi:2021:AIII}, the following algorithm was derived.
+
+\begin{algorithm}
+    \caption{Latent Label Classifier Training}
+    \begin{algorithmic}
+        \REQUIRE $D = $ Training Dataset, $S = $ Sensitive Attributes, $L = $ Attribute to predict. $t = $ tolerance for expectation maximisation.
+        \ENSURE $M = $ Trained bayesian network.
+        \STATE Set of blacklisted nodes: $B = \{(x, y) \quad \forall x \in D.\text{columns}, \quad \forall y \in S\}$
+        \STATE $M$.structure $=$ HillClimbSearch($D.$columns $\setminus L$, $B$)
+        \STATE $M.$structure$ \cup \{ (x, L) \quad \forall x \in $S$\}$
+        \STATE initialise fair node $F$
+        \STATE $M.$structure$ \cup \{ (F, x) \quad \forall x \in D.\text{columns}\}$
+        \STATE $M.$structure$ \cup \{ (F, L)\}$
+        \STATE M.parameters $=$ ExpectationMaximisation($M$.structure, $D$)
+        \RETURN M 
+    \end{algorithmic}
+\end{algorithm}
+
+This method uses two methods implemented in pgmpy \cite{Ankan:2015:SCIPY}. These are Hill Climb Search for learning the structure which is described in section~\ref{HillClimbSearch} and Expectation Maximisation which is describedn in section~\ref{Expectation Maximization}. The resulting bayesian network on the adult dataset is shown below:
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[nodes={draw, circle}, ->]
+        \node (Race) {$R$};
+        \node (Gender) [right=of Race]{$G$};
+        \node (Fair) [right=of Gender] {$F$};
+        \node (Capital) [below=2cm of Race] {$C$};
+        \node (Relationship) [left=of Capital] {$R_e$};
+        \node (Education) [left=of Relationship] {$E$};
+        \node (Age) [left=of Education] {$A$};
+        \node (Marital) [right=of Capital] {$M$};
+        \node (Workclass) [right=of Marital] {$W$};
+        \node (Hours) [right=of Workclass] {$H$};
+        \node (Occupation) [right=of Hours] {$O$};
+        \node (Income) [right=of Occupation] {$I$};
+
+        \draw (Fair) -> (Age);
+        \draw (Fair) -> (Education);
+        \draw (Fair) -> (Relationship);
+        \draw (Fair) -> (Capital);
+        \draw (Fair) -> (Marital);
+        \draw (Fair) -> (Workclass);
+        \draw (Fair) -> (Hours);
+        \draw (Fair) -> (Occupation);
+        \draw (Fair) -> (Income);
+        
+        \draw (Race) -> (Income);
+        \draw (Race) -> (Marital);
+        
+        \draw (Gender) -> (Relationship);
+        \draw (Gender) -> (Marital);
+        \draw (Gender) -> (Workclass);
+        \draw (Gender) -> (Hours);
+        \draw (Gender) -> (Occupation);
+        \draw (Gender) -> (Income);
+        
+        \draw (Age) to  [out=270,in=240] (Hours);
+        \draw (Relationship) to  [out=270,in=300] (Age);
+        \draw (Relationship) to  [out=270,in=240] (Hours);
+        \draw (Marital) to [out=270,in=300] (Age);
+        \draw (Marital) to [out=270,in=300] (Relationship);
+        \draw (Workclass) to [out=270,in=240] (Occupation);
+        \draw (Hours) to [out=270,in=300] (Workclass);
+        \draw (Hours) to [out=270,in=240] (Occupation);
+        \draw (Occupation) to [out=270, in=300] (Education);
+    \end{tikzpicture}
+    \caption{latentFairClassifier trained on Adult Dataset. The nodes are $R$: race, $G$: gender, $F$: latent fair labels, $A$: Age, $E$: Education, $R_e$: Relationship, $C$: Capital gain, $M$: Marital Status, $W$: Work class, $H$: Hours-per-week, $O$: Occupation and $I$: Income.}
+    \label{fig:latentFairClassifierAdult}
+\end{figure}
+
+Inference has been performed by evaluating $P(F | A, E, R_e, C, M, W, H, O)$ on a test dataset of unobserved labels. This is done in pgmpy by using Variable Elimination which is described in section \ref{Variable Elimination}.
     
 \section{Theme 1}
 \section{Theme 2}

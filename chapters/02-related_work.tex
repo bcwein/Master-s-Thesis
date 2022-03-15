@@ -6,7 +6,7 @@ One of the most important papers out there for getting to know the field of fair
 
 \section{Bias in Data}
 
-Some of the sources of bias have been discussed already in section \ref{ch:intro} but here we will go through more of them and in more detail. We have the following biases according to \citet{Mehrabi:2021:CSUR}:
+Some of the sources of bias have been discussed already in Section~\ref{ch:intro} but here we will go through more of them and in more detail. We have the following biases according to \citet{Mehrabi:2021:CSUR}:
 
 \subsection{Historical Bias}
 
@@ -24,7 +24,7 @@ This source of bias originates in the way the particular features have been meas
 
 Population bias arises when the sampled population have different properties than the original target population. \cite{Olteanu:2019:FDATA} An example of this would be to sample data from different social media platforms, which have different user demographics. I.e men using reddit and women using instagram.
 
-And there are many other sources of bias and some of these are very hard to avoid. It is reasonable to assume that most available datasets today are biased, which makes the approach described in section \ref{sec:probmac} important.
+And there are many other sources of bias and some of these are very hard to avoid. It is reasonable to assume that most available datasets today are biased, which makes the approach described in Section~\ref{sec:probmac} important.
 
 \section{Algorithmic Fairness}
 
@@ -32,23 +32,23 @@ Discrimination has many different definitions, and while no gold-standard defint
 
 \textbf{Equalized Odds}: According to \citet{Mehrabi:2021:CSUR, Hardt:2016:NIPS} A predictor $\hat{Y}$ satisfies equalised odds with respect to a sensitive attribute $A$ and outcome $Y$ if $\hat{Y}$ and $A$ are conditionally independent on $Y$. i.e
 
-\begin{equation}
+\begin{equation*}
     P(\hat{Y}|A=0, Y=y) = P(\hat{Y}|A=1, Y=y), y \in {0, 1}
-\end{equation}
+\end{equation*}
 
 \textbf{Equal Opportunity}: According to \citet{Mehrabi:2021:CSUR, Hardt:2016:NIPS} A binary predictor $\hat{Y}$ satisfies equal opportunity with respect to $A$ and $Y$ if
 
-\begin{equation}
+\begin{equation*}
     P(\hat{Y}=1|A=0, Y=1) = P(\hat{Y}=1|A=1, Y=1)
-\end{equation}
+\end{equation*}
 
 \textbf{Demographic Parity}: According to \citet{Mehrabi:2021:CSUR, Dwork:2012:ITCS} A predictor $\hat{Y}$ satisfies demographic parity if 
 
-\begin{equation}
+\begin{equation*}
     P(\hat{Y}|A=0) = P(\hat{Y}|A=1)
-\end{equation}
+\end{equation*}
 
-And many more metrics exist. A challenge is that according to \citet{Mehrabi:2021:CSUR, Kleinberg:2017:LIPIcs} it is impossible to satisfy some of these fairness constraints. One should therefore be considerate when using a certain metric. Synthesising these definitions to one gold-standard remains an open research question. For this thesis. Demographic parity is especially important as it is fundemental in the model described in section \ref{sec:probmac}.
+And many more metrics exist. A challenge is that according to \citet{Mehrabi:2021:CSUR, Kleinberg:2017:LIPIcs} it is impossible to satisfy some of these fairness constraints. One should therefore be considerate when using a certain metric. Synthesising these definitions to one gold-standard remains an open research question. For this thesis. Demographic parity is especially important as it is fundemental in the model described in Section~\ref{sec:probmac}.
 
 \section{Methods for Fair Machine Learning}
 
@@ -56,11 +56,11 @@ Machine Learning is a large domain encompassing many sub-domains. These include 
 
 \textit{Fair Classification:} Some of the most important work in the field of fair classification summarised by \cite{Mehrabi:2021:CSUR}. Some important previous work for this thesis is the Naive Bayes approach for fair classification by \citet{Calders:20210:DMKD} In this work the authors investigated how to modify the naive bayes classifier in order to perform classification that is restricted to be independent from the sensitive attributes. In this paper they measure discrimination by \textit{discrimination score} which is defined as
 
-\begin{equation}
+\begin{equation*}
     P(C=+|S_+) - P(C=+|S_-)
-\end{equation}
+\end{equation*}
 
-Which assumes that a classifier is fair if the outcome is independent of the sensitive attribute. i.e \textit{Demographic Parity} as described above. The main limitation of this paper is that the classifier on the non-sensitive attributes is a naive-bayes classifier. Which means it assumes that all the features are independent. This makes it one of the simplest bayesian networks out there as well as scalable since the number of parameters is scaled linearly with the number of features. This limitation is adressed further in section \ref{sec:probmac}.
+Which assumes that a classifier is fair if the outcome is independent of the sensitive attribute. i.e \textit{Demographic Parity} as described above. The main limitation of this paper is that the classifier on the non-sensitive attributes is a naive-bayes classifier. Which means it assumes that all the features are independent. This makes it one of the simplest bayesian networks out there as well as scalable since the number of parameters is scaled linearly with the number of features. This limitation is adressed further in Section~\ref{sec:probmac}.
 
 Other important works are the works of \cite{Zafar:2017:NIPS} and \citet{Dwork:2018:PMLR}. \citet{Zafar:2017:NIPS} introduced new notions on how to define fairness, arguing that the traditional parity based notion is  quite stringent, limiting the overall decision making accuracy. They tie in elements from envy-freeness literature in economics and game theory and propose preference-based notions of fairness. 
 
@@ -73,47 +73,47 @@ Important to this thesis is the work of \citet{Choi:2021:AIII} Which is a follow
 
 In this thesis, we will focus on probabilistic machine learning, therefore a brief introduction to this field is in place. According to \citet{Murphy:2012:Book} machine learning is usually divided into two main types. \textbf{Predictive} or \textbf{Supervised learning} approach \cite[p.~2]{Murphy:2012:Book}, the goal is to learn a mapping from inputs $x$ to outputs $y$ given a labeled set of input-output pairs
 
-\begin{equation}
+\begin{equation*}
     \mathcal{D} = {(x_i, y_i)}_{i=1}^N
-\end{equation}
+\end{equation*}
 
 The second type is the \textbf{descriptive} or \textbf{unsupervised learning} where we are only given the data itself without labels
 
-\begin{equation}
+\begin{equation*}
     \mathcal{D} = {x_i}_{i=1}^N
-\end{equation}
+\end{equation*}
 
 here the goal is to find interesting patterns in the data that is inherent to the data itself without the need of labels. This problem is not as well defined as the predictive case and there is no obvious error metric. The third type is \textbf{reinforcement learning} where you let an agent explore a space and desired behaviour is rewarded through a performance or reward metric. 
 
 A common way to perform supervised learning is to treat  $y$ as a random variable and estimate a mapping 
 
-\begin{equation}
+\begin{equation*}
     f: x \rightarrow y
-\end{equation}
+\end{equation*}
 
 One example of this is Linear Regression. Which maps input vectors $x$ to outputs $y$ using the following mapping \cite[p.~19]{Murphy:2012:Book}
 
-\begin{equation}
+\begin{equation*}
     f: y = \mathbf{w}^Tx + \epsilon = \sum_{j=1}^N w_j x_j + \epsilon
-\end{equation}
+\end{equation*}
 
 and often $\epsilon$ is assumed to be gaussian and the model can be rewritten as 
 
-\begin{equation}
+\begin{equation*}
     p(y|x, \theta) = \mathcal{N}(y|\mu(x), \sigma^2(x))
-\end{equation}
+\end{equation*}
 
 One common way to estimate the parameters of a statistical model is to calculate the maximum likelihood estimate of the model parameters \cite[p.~217]{Murphy:2012:Book}
 
-\begin{equation}
+\begin{equation*}
     \hat{\mathbf{\theta}} = \argmax_{\theta} \log p(\mathcal{D}|\theta)
-\end{equation}
+\end{equation*}
 
 and for linear regression, minimising the sum of squared errors has an explicit solution \cite[p.~220]{Murphy:2012:Book}
 
-\begin{equation}
+\begin{equation*}
     \hat{\bf{w}}_{\text{OLS}} = (\bf{X}^T\bf{X})^{-1}\bf{X}^T\bf{y}
-\end{equation}
+\end{equation*}
 
 This estimate gives us a point estimate of the model parameters. I.e one dataset produces one point estimate. This is traditionally what many machine learning algorithms do, take a dataset and calculate the most likely point estimate of the model parameters. It is reasonable to assume that the model parameters that is returned from one dataset is different to the true model parameters and it would in many cases be beneficial to know how uncertain the model parameters are. This is where the \textbf{probabilistic} approach comes in.
 
@@ -121,15 +121,15 @@ In a probabilistic approach, we treat the input data and labels as random variab
 
 In bayesian linear regression, the likelihood of $y$ is given by \cite[p.~232]{Murphy:2012:Book}
 
-\begin{equation}
+\begin{equation*}
     p(\bf{y}|\bf{X}, \bf{w}, \mu, \sigma^2) = \mathcal{N}(\bf{y}|\mu + \bf{X}\bf{w}, \sigma^2 \bf{I}_N)
-\end{equation}
+\end{equation*}
 
 and using a gaussian prior distribution since it is a conjugate prior, the posterior becomes \cite[p.~232]{Murphy:2012:Book}
 
-\begin{equation}
+\begin{equation*}
     p(\bf{w}|\bf{X}, \bf{y}, \sigma^2) \propto \mathcal{N}(\bf{w}|\bf{w_0}, \bf{V_0}) \mathcal{N}(\bf{y}|\bf{Xw}, \sigma^2\bf{I})
-\end{equation}
+\end{equation*}
 
 And we have a full distribution of model parameters, which gives us insight into the uncertainty of the model. This property is desired for assessing fairness and uncertainty later in this thesis.
 
@@ -154,21 +154,23 @@ A graphical model is a way to represent a joint probability distribution. Nodes 
 
 Graphical models gives us a graphical way to represent the joint pdf. It models the conditional dependencies between random variables. From this graph, we see that the joint probability distribution of this classifier is
 
-\begin{equation}
+\begin{equation*}
     p(y, x_1, x_2, x_3, x_4) = p(y)p(x_1|y)p(x_2|y)p(x_3|y)p(x_4|y)
-\end{equation}
+\end{equation*}
 
-\subsection{Markov Random Fields}
+\subsection{Naive Bayes Classifier: Baseline Method}
+The naive bayes classifier is the simplest bayesian nework, assuming that all features are independent conditionally on the class variable, hence the method being called naive. This naive assumption gives the model few parameters to learn and it requires little training data to achieve good performance. From the work by \citet{Zhang:2004:AAAI} we know that naive bayes classifiers perform well despite the assumption on independence among features due to the dependencies cancelling each other out and dependencies distributing evenly among classes.
 
-add more later
+Assuming that we have a dataset $X = (x_1, x_2, \dots, x_N)$ with $N$ independent features
 
-\subsection{Factor Graphs}
+\subsection{Structure Learning: Hill Climb Search}
+\label{HillClimbSearch}
 
-add more later
+\subsection{Parameter Learning: Expectation Maximization}
+\label{Expectation Maximization}
 
-\subsection{Sum-Product Networks}
-
-add more later
+\subsection{Exact Inference: Variable Elimination}
+\label{Variable Elimination}
 
 \section{Modeling Discrimination Process}
 

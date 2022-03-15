@@ -50,17 +50,16 @@ The goal of this thesis is to explore certain models and approaches to achieve f
 
 \subsection{RQ1: What probabilistic graphical model is most appropriate to model the discrimination process?}
 
-Probabilistic machine learning models come in many different forms. In this thesis we want to use probabilistic machine learning to model the discrimination and data generation process. This is explained in further detail in section~\ref{ch:related}. At the end, a specific probabilistic graphical model should be provided.
+Probabilistic machine learning models come in many different forms. In this thesis we want to use probabilistic machine learning to model the discrimination and data generation process. This is explained in further detail in Section~\ref{ch:related}. At the end, a specific probabilistic graphical model should be provided.
+
+In the paper by \citet{Choi:2021:AIII} sum-product networks have been used and its follow-up papers. Sum-product networks are especially desirable for their fast inference. Inference in bayesian-networks are NP-hard while sum-product networks the inference time is proportional to the number of edges and nodes. \cite{Sánchez-Cauce:2021:TPAMI}. There is still uncertainty in what kind of model is best for incorporating fairness and this thesis aims to explore this further.
+
 
 \subsection{RQ2: How to quantify uncertainty in model and fairness.}
 
-Given the probabilistic (bayesian) approach that will be used in this thesis. Uncertainty and posterior distributions of model parameters could somehow be used to adress unfairness and should be investigated. Additionally, given a definition of unfairness employed by the model, a posterior distribution of the unfairness score should be calculated to assess the fairness of the model. At the end, a specific bayesian framework for calculating model uncertainty and fairness uncertainty should be provided.
+Given the probabilistic (bayesian) approach that will be used in this thesis. Uncertainty and posterior distributions of model parameters could somehow be used to address unfairness and should be investigated. Additionally, given a definition of unfairness employed by the model, a posterior distribution of the unfairness score should be calculated to assess the fairness of the model. At the end, a specific bayesian framework for calculating model uncertainty and fairness uncertainty should be provided.
 
-\subsection{RQ3: Definition of fairness}
-
-This will be discussed further in section~\ref{ch:related}, but given the different definitions of fairness, investigation on which one is more appropriate should be done. At the end, a definition of choice should be presented.
-
-\subsection{RQ4: How does the probabilitic approach compare with traditional machine learning methods?}
+\subsection{RQ3: How does the probabilitic approach compare with traditional machine learning methods?}
 
 The probabilistic model proposed in this thesis should be compared to a baseline method to see if there are any benefits in terms of performance, accuracy, fairness as well as addin the bayesian persepctive to the problem. At the end, simulations should be presented with both real world datasets and synthetic datasets and their repsective performance metrics.
 
