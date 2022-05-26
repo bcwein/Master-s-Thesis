@@ -10,3 +10,32 @@ The following may (optionally) go to an appendix chapter:
     \item Setup and installation instructions to repeat the experiments etc.
 \end{itemize}
 }
+
+\section{Experiment 1 Results}
+\label{app:experiment1}
+
+\begin{landscape}
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\hline
+\textbf{Accuracy} & \textbf{BA} & \textbf{F1 Score} & \textbf{Specificity} & \textbf{PS Race} & \textbf{PS gender} & \textbf{Int PS} & \textbf{Model} & \textbf{Dataset} \\ \hline
+0.42000 & 0.61000 & 0.45000 & 0.24000 & 0.88000 & 0.80000 & 0.77000 & FRFC07      & Adult  \\ \hline
+0.54000 & 0.65000 & 0.47000 & 0.44000 & 0.88000 & 0.79000 & 0.78000 & FRFC03      & Adult  \\ \hline
+0.66000 & 0.75000 & 0.57000 & 0.58000 & 0.86000 & 0.67000 & 0.71000 & FRFC05      & Adult  \\ \hline
+0.81000 & 0.80000 & 0.67000 & 0.83000 & 0.82000 & 0.66000 & 0.71000 & NBSens      & Adult  \\ \hline
+0.81000 & 0.80000 & 0.67000 & 0.83000 & 0.82000 & 0.66000 & 0.71000 & NBSens      & Adult  \\ \hline
+0.82000 & 0.76000 & 0.63000 & 0.89000 & 0.88000 & 0.94000 & 0.87000 & FairBN      & Adult  \\ \hline
+0.83000 & 0.72000 & 0.59000 & 0.94000 & 0.85000 & 0.75000 & 0.78000 & IncomeBN    & Adult  \\ \hline
+1.00000 & 1.00000 & 1.00000 & 1.00000 & 0.85000 & 0.80000 & 0.81000 & Dataset     & Adult  \\ \hline
+0.60000 & 0.56000 & 0.28000 & 0.96000 & 0.94000 & 0.90000 & 0.91000 & FairBN      & Compas \\ \hline
+0.60000 & 0.57000 & 0.28000 & 0.96000 & 0.95000 & 0.66000 & 0.45000 & LabelBN     & Compas \\ \hline
+0.64000 & 0.62000 & 0.52000 & 0.81000 & 0.70000 & 0.56000 & 0.38000 & NBSensitive & Compas \\ \hline
+0.64000 & 0.64000 & 0.61000 & 0.64000 & 0.91000 & 0.54000 & 0.49000 & NB          & Compas \\ \hline
+1.00000 & 1.00000 & 1.00000 & 1.00000 & 0.94000 & 0.54000 & 0.50000 & Dataset     & Compas \\ \hline
+0.53000 & 0.56000 & 0.64000 & 0.20000 & 0.99000 & 0.82000 & 0.82000 & FRFC03      & Compas \\ \hline
+0.61000 & 0.59000 & 0.39000 & 0.91000 & 0.90000 & 0.66000 & 0.45000 & FRFC05      & Compas \\ \hline
+0.46000 & 0.50000 & 0.63000 & 0.00000 & 1.00000 & 1.00000 & 1.00000 & FRFC07      & Compas \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}

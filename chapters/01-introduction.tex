@@ -2,39 +2,36 @@
 \chapter{Introduction}
 \label{ch:intro}
 
-\instructions{Page budget for Introduction: 3-5 pages}
-
 \section{Background and Motivation}
+
 \label{sec:intro:background}
-Discrimination is the act of making unjustified distinctions between people based on the groups, classes, or other categories to which they belong or are perceived to belong. There exists many different definitions of discrimination \cite{Altman:2011:doc} and the fairness that one wants to achieve to avoid this discrimination in terms of machine learning. \cite{Binns:2018:PMLR}
 
-According to \citet{Dressel:2018:AAAS}, a real world example of discrimination in terms of machine learning is COMPAS. A widely used criminal risk assessment tool. It has been used to assess more than 1 million offenders since it was developed in 1998. Compas predicts a defendant’s risk of committing a misdemeanour or felony within 2 years of assessment from 137 features about an individual and the individual’s past criminal record.
+Presently, we are experiencing both the Information Age and the fourth industrial revolution \citep{Castells:2009:Book, Hamdan:2021:Book}. The information age has been characterised by the commercialisation of computer power resulting from technological advances in transistor technology and global communication technologies \citep[p.~30]{Castells:2009:Book}. The fourth industrial revolution is marked by growing connectivity and intelligent automation. \citep{Bai:2020:IJPE} Modern smart technology, large-scale machine-to-machine communication (M2M), and the internet of things (IoT) are causing fundamental shifts in the global production and supply network as old manufacturing and industrial methods continue to be automated. 
 
-One would think that a simple way to avoid discrimination is to not consider the groups, classes, or other categories that is seen as sensitive. Counter intuitively, ignoring sensitive attributes is not enough to mitigate bias. The machine learning model learns the discriminatory decision rule indirectly from attributes that correlate to the sensitive one. \cite{Dressel:2018:AAAS, Calders:20210:DMKD} This process is called redlining. The sensitive attribute must be included to penalise the machine learning model when it discriminates.
+In this broader technological advancement, machine learning has become only one of several fields.
+In particular, machine learning is replacing manual labour through automation and robotics, as well as higher-level decision-making by quantifying large-scale data and applying this information to provide insight to human decision-makers. \citep{Hamdan:2021:Book}
+
+These transformations are required to meet many of the UN-defined sustainability goals, such as affordable and clean energy, decent work and economic growth, and industry, innovation, and infrastructure (goals 7, 8, and 9, respectively). \citep{Bai:2020:IJPE} In addition to these goals, the United Nations has outlined two others: gender equality and reduced disparities, goals 5 and 10, respectively. \citep{UN:2015:Resolution} In machine learning research, equality and fairness are consequently receiving a great deal more focus than in the past. \cite{Mehrabi:2021:CSUR}
+
+Discrimination is when people are treated unfairly because of the groups, classes, or other categories to which they belong or are seen to belong. In terms of machine learning, there are many distinct definitions of discrimination \citep{Altman:2011:doc} and the fairness that one wants to attain to avoid this prejudice. \citep{Binns:2018:PMLR}
+
+According to \citet{Dressel:2018:AAAS}, a real world example of discrimination in terms of machine learning is COMPAS. A frequently used technique for determining criminal risk. Since its inception in 1998, it has been used to examine over 1 million offenders. Compas uses 137 factors about a person and their criminal history to forecast whether they would commit a misdemeanour or felony within two years of being assessed.
+
+One would think that ignoring sensitive groups, classes, or other categories would be an easy method to avoid discrimination. Counterintuitively, omitting sensitive attributes is insufficient to eliminate prejudice. The discriminatory decision rule is learned indirectly by the machine learning model from qualities that correlate to the sensitive one. \citep{Dressel:2018:AAAS, Calders:20210:DMKD} This process is called redlining. The sensitive attribute must be included to penalise the machine learning model when it discriminates.
 
 The source of bias and discrimination often comes from the data that the machine learning algorithm is trained on. According to \citet{Mehrabi:2021:CSUR} some prominent sources of bias are
 
 \begin{itemize}
-    \item \textbf{Historical Bias}: Historical bias is the already existing bias and socio-technical issues in the world. This affect the data generation process.
+    \item \textbf{Historical Bias}: Historical bias is the already existing bias and sociotechnical issues in the world. This affect the data generation process.
     \item \textbf{Representation Bias}: Lack of representation of certain groups in datasets skew the dataset from the real-world distribution.
     \item \textbf{Simpsons Paradox}: Bias originating from the analysis of heterogeneous data that is composed of subgroups or individuals with different behaviours.
 \end{itemize}
 
-Data, especially big data, is often heterogeneous, generated by subgroups with their own characteristics and behaviors. The heterogeneity can bias the data. A model learned on biased data may lead to unfair and inaccurate predictions.
+Data, especially big data, is often heterogeneous, generated by subgroups with their own characteristics and behaviours. The heterogeneity can bias the data. A model learned on biased data may lead to unfair and inaccurate predictions.
 
-There are currently several challenges in the field of fair machine learning to face. Since ignoring the sensitive attributes does not help to mitigate bias, one must discover how to best employ these sensitive attributes to achieve fairness. In the literature there exists several statistical and mathematical definitions of fairness. Rather concerning is the fact that some of these definitions is mathematically impossible to satisfy simultaneously. \cite{Kleinberg:2017:LIPIcs}
+There are currently several challenges in the field of fair machine learning to face. Since ignoring the sensitive attributes does not help to mitigate bias, one must discover how to best employ these sensitive attributes to achieve fairness. In the literature, there exists several statistical and mathematical definitions of fairness. Rather concerning is the fact that some of these definitions are mathematically impossible to satisfy simultaneously. \citep{Kleinberg:2017:LIPIcs}
 
-As of the time of writing this thesis, there is no gold standard on how to train fairness-aware machine learning algorithms and there exists several approaches on how to achieve this. \cite{Mehrabi:2021:CSUR} The goal of this thesis is to explore some of these approaches and see how they compare to others. 
-
-\instructions{
-\begin{itemize}
-    \item Awaken the reader's interest and convince her why the theme is important. (done)
-    \item Background information might be historical in nature, or it might refer to previous research or practical considerations. (done)
-    \item Provide an example or use case for the problem. (done)
-    \item It should be written on a level that it's understandable by anyone with a computer science master's degree. (done)
-    \item It might contain a small handful of citations if it is needed to justify some main claims or assumptions, but this is not the part to detail any related work and/or compare among each other. (done)
-\end{itemize}
-}
+As of the time of writing this thesis, there is no gold standard on how to train fairness-aware machine learning algorithms, and there exists several approaches on how to achieve this. \citep{Mehrabi:2021:CSUR} The goal of this thesis is to explore some of these approaches and see how they compare to others. 
 
 \section{Objectives}
 \label{sec:intro:objectives}
@@ -44,47 +41,44 @@ The goal of this thesis is to explore certain models and approaches to achieve f
 \begin{itemize}
     \item Discover how probabilistic machine learning and graphical models can be used to model the discrimination process.
     \item Discover how probabilistic machine learning and graphical models can be used to quantify uncertainty in the model and it's fairness.
-    \item Explore what definitions of fairness is most appropriate for probabilistic machine learning.
+    \item Explore what definitions of fairness are most appropriate for probabilistic machine learning.
     \item How does the probabilistic approach compare to traditional machine learning methods?
+    \item Are the fair machine learning models explainable?
 \end{itemize}
 
 \subsection{RQ1: What probabilistic graphical model is most appropriate to model the discrimination process?}
 
 Probabilistic machine learning models come in many different forms. In this thesis we want to use probabilistic machine learning to model the discrimination and data generation process. This is explained in further detail in Section~\ref{ch:related}. At the end, a specific probabilistic graphical model should be provided.
 
-In the paper by \citet{Choi:2021:AIII} sum-product networks have been used and its follow-up papers. Sum-product networks are especially desirable for their fast inference. Inference in bayesian-networks are NP-hard while sum-product networks the inference time is proportional to the number of edges and nodes. \cite{Sánchez-Cauce:2021:TPAMI}. There is still uncertainty in what kind of model is best for incorporating fairness and this thesis aims to explore this further.
+\subsection{RQ2: Are the proposed probabilistic graphical models explainable?}
 
+One thing is that the machine learning model is able to learn decision rules that minimise some mathematical definition of fairness, but how does the model use the sensitive attributes in its decisions? The proposed fairness-aware models should be evaluated in terms of fairness and explainability as well. 
 
-\subsection{RQ2: How to quantify uncertainty in model and fairness.}
+\subsection{RQ3: Are probabilistic machine learning models cost-effecitive?}
 
-Given the probabilistic (bayesian) approach that will be used in this thesis. Uncertainty and posterior distributions of model parameters could somehow be used to address unfairness and should be investigated. Additionally, given a definition of unfairness employed by the model, a posterior distribution of the unfairness score should be calculated to assess the fairness of the model. At the end, a specific bayesian framework for calculating model uncertainty and fairness uncertainty should be provided.
-
-\subsection{RQ3: How does the probabilitic approach compare with traditional machine learning methods?}
-
-The probabilistic model proposed in this thesis should be compared to a baseline method to see if there are any benefits in terms of performance, accuracy, fairness as well as addin the bayesian persepctive to the problem. At the end, simulations should be presented with both real world datasets and synthetic datasets and their repsective performance metrics.
-
-
-\instructions{
-\begin{itemize}
-   \item Define the goals of your study. It might be presented as a bullet list.
-  \item Structure your goal by Research Questions (RQs). Describe each of the problems to address in your work and formulate for it a clear research question.``The problem of bla is about$\dots$, We formulate the following RQ1 Can we provide a method for bla such that bla bla''
-\end{itemize}
-}
+The probabilistic model proposed in this thesis should be compared to baseline methods to see if there are any benefits in terms of performance, accuracy, fairness as well as adding the bayesian perspective to the problem. At the end, simulations should be presented with both real world datasets and synthetic datasets and their repsective performance metrics.
 
 \section{Approach and Contributions}
 \label{sec:intro:approach}
 
-In this thesis, different algorithms and methods have been explored. These have all been made into a python package for ease of use. 
+In this thesis, different algorithms and methods have been explored. These have all been made into a python package for ease of use. This python package has been named Forseti, named after the Norse god of justice and reconciliation. This python package has several modules with implemented algorithms. The code and relevant documentation is available in the following github repository \footnote{\url{https://github.com/bcwein/Forseti}}, as well as attached to this thesis when submitted.
 
-\instructions{
-\begin{itemize}
-  \item Give a brief summary of your overall approach.
-  \item Summarize the specific contributions that you made in this thesis (e.g., a task definition, a method or model, a test collection, empirical results, analysis, etc.). It might be presented as a bullet list.
-\end{itemize}
-}
+These algorithms are used in experiments where performance metrics are collected. These metrics include fairness scores as well as traditional machine learning performance metrics. These results are used in further hypothesis testing to test whether differences in performance is statistically significant.
+
+Later, the machine learning models are investigated whether they are interpretable. Feature Importance is calculated and Individual Conditional Expectation Plots are performed on the models to explain how the models are using the sensitive attributes in their decision making. This way we hope to gain better insight into how the fair models change their decision compared to their traditional counterparts.
 
 \section{Outline}
 \label{sec:intro:outline}
+
+In this section we have discussed the broader picture of machine learning and the current technological and economic developments in the world. Especially how fairness is becoming evermore important in society as a whole. Through this we have defined some research questions that we want to explore.
+
+In chapter~\ref{ch:related} we go into more detail on the related works and previous methods already developed. We go into detail on how they work and what described the mechanisms behind them. Chapter 2 serves to give you the necessary background knowledge to understand the workings in later chapters.
+
+Chapter~\ref{ch:approach} describes the approach that is used in this thesis. We describe the software developed and how it is organised, how the experiments have been set up and how you can set this up on your own system. This chapter gives you the necessary insight to follow the approach yourself and understand exactly how the work in this thesis has been done.
+
+Next in chapter~\ref{ch:eval} we show the results from the approach described in chapter~\ref{ch:approach}. This includes data exploration, experimental results, presentation of hypothosis tests and discussion of these results. 
+
+Finally in chapter~\ref{ch:conclusion} we draw the final remarks. Including what we have found out, what have been good about the approach and our results and what are the limitations of this study. Discussion of potential future work should be done.
 
 \instructions{
 \begin{itemize}

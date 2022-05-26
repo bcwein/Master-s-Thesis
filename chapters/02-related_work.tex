@@ -1,4 +1,3 @@
-
 \chapter{Related Work}
 \label{ch:related}
 
@@ -44,11 +43,20 @@ Discrimination has many different definitions, and while no gold-standard defint
 
 \textbf{Demographic Parity}: According to \citet{Mehrabi:2021:CSUR, Dwork:2012:ITCS} A predictor $\hat{Y}$ satisfies demographic parity if 
 
-\begin{equation*}
+\begin{equation}
     P(\hat{Y}|A=0) = P(\hat{Y}|A=1)
-\end{equation*}
+    \label{eq:dempar}
+\end{equation}
 
-And many more metrics exist. A challenge is that according to \citet{Mehrabi:2021:CSUR, Kleinberg:2017:LIPIcs} it is impossible to satisfy some of these fairness constraints. One should therefore be considerate when using a certain metric. Synthesising these definitions to one gold-standard remains an open research question. For this thesis. Demographic parity is especially important as it is fundemental in the model described in Section~\ref{sec:probmac}.
+And many more metrics exist. A challenge is that according to \citet{Mehrabi:2021:CSUR, Kleinberg:2017:LIPIcs} it is impossible to satisfy some of these fairness constraints. One should therefore be considerate when using a certain metric. Synthesising these definitions to one gold-standard remains an open research question. For this thesis. Demographic parity is especially important as it is fundemental in the model described in Section~\ref{sec:paper1}.
+
+\textbf{Strong Demographic Parity}: According to \citet{Antonio:2021:arXiv}, this is a parity score that extends demographic parity by considering fairness throughout the entire range of possible decision thresholds. It was proposed by \citet{Jiang:2020:PMLR}. When learning a fair classifier to satisfy strong demographic parity, the predictor $\hat{Y}$ must satisfy demographic parity for any threshold $t$ and sensitive attribute $A$
+
+$$
+\forall t \in \hat{Y} : P(\hat{Y} \geq t | A = 0) = P(\hat \geq t | A = 1)
+$$
+
+This assumes that the model output $\hat{Y}$ is a probability or score of belonging to the class of interest and $t$ is a selected threshold for classifying.
 
 \section{Methods for Fair Machine Learning}
 
@@ -66,7 +74,7 @@ Other important works are the works of \cite{Zafar:2017:NIPS} and \citet{Dwork:2
 
 \citet{Dwork:2018:PMLR} provide a simple and efficient decoupling technique, which can be added on top of any black-box machine learning algorithm, to learn different classifers for different groups. Transfer learning is used to mitigate the problem of having too little data on any one group.
 
-Important to this thesis is the work of \citet{Choi:2021:AIII} Which is a follow up paper to \cite{Calders:20210:DMKD}. They have generalised the limitation of the first paper where a naive-bayes classifier was necessary. Their framework can be generalised to any local probabilistic network. This will be discussed in more detail in section \ref{sec:probmac}
+Important to this thesis is the work of \citet{Choi:2021:AIII} Which is a follow up paper to \cite{Calders:20210:DMKD}. They have generalised the limitation of the first paper where a naive-bayes classifier was necessary. Their framework can be generalised to any local probabilistic network. This will be described in more detail in section \ref{sec:fairbayesiannetwork}. The work of \citet{Antonio:2021:arXiv} and their development of a fair tree based classifier using strong demographic parity is also important for this thesis and is described in more detail in section~\ref{sec:fairtree}.
 
 \section{Probabilistic Machine Learning}
 \label{sec:probmac}
@@ -159,9 +167,20 @@ Graphical models gives us a graphical way to represent the joint pdf. It models 
 \end{equation*}
 
 \subsection{Naive Bayes Classifier: Baseline Method}
-The naive bayes classifier is the simplest bayesian nework, assuming that all features are independent conditionally on the class variable, hence the method being called naive. This naive assumption gives the model few parameters to learn and it requires little training data to achieve good performance. From the work by \citet{Zhang:2004:AAAI} we know that naive bayes classifiers perform well despite the assumption on independence among features due to the dependencies cancelling each other out and dependencies distributing evenly among classes.
+\label{relatedwork:naivebayes}
+The naive bayes classifier is the simplest bayesian network, assuming that all features are independent conditionally on the class variable, hence the method being called naive. This naive assumption gives the model few parameters to learn and it requires little training data to achieve good performance. From the work by \citet{Zhang:2004:AAAI} we know that naive bayes classifiers perform well despite the assumption on independence among features due to the dependencies cancelling each other out and dependencies distributing evenly among classes.
 
-Assuming that we have a dataset $X = (x_1, x_2, \dots, x_N)$ with $N$ independent features
+According to \citet[p.~217]{Ankan:2015:Book}, assume that we have a dataset $X = (x_1, x_2, \dots, x_N)$ with $N$ independent features and $k$ classes $C_k$ that we want to classify the data to. Naive bayes does this by modeling the posterior distribution in terms of the joint probability
+
+$$
+P(C_k | X) \propto P(C_k , X) = P(C_k) \prod_{i=1}^{n} P(x_i|C_k)
+$$
+
+Where the naive assumption is that $P(x_i | X \setminus x_i , C_k) = P(x_i | C_k)$ i.e the features are mutually independent conditioned on $C_k$. Different naive bayes methods exist for the assumptions on the priors and likelihoods, i.e if they are gaussian, binomial, categorical etc. The model classifies the data to the class that has the highest posterior probability. 
+
+\subsection{pgmpy: Naive Bayes}
+
+The naive bayes classifier that has been used is implemented in pgmpy and is used as a baseline method in the experiment described in section~\ref{sec:AdultFairnessAssessment}. The implementation in pgmpy implements a naive bayes method and assumes categorical distributions on all parameters. The probabilities are calculated as conditional probability tables (CPD Tables) using the MLE estimate from data. I.e calculating probabilities from the dataset by counting occurences conditioned on the class label. For more detail on how this is implemented, see pgmpy's documentation \footnote{\url{https://pgmpy.org/index.html}}.
 
 \subsection{Structure Learning: Hill Climb Search}
 \label{HillClimbSearch}
@@ -173,7 +192,7 @@ Assuming that we have a dataset $X = (x_1, x_2, \dots, x_N)$ with $N$ independen
 \label{Variable Elimination}
 
 \section{Modeling Discrimination Process}
-
+\label{sec:paper1}
 Now that probabilistic machine learning and graphical models have been introduced, it is time to introduce the work of \citet{Choi:2021:AIII} in more detail. As discussed previously in this section. There are many sources of bias in data and it is reasonable to assume that almost all datasets out there is biased. \citet{Choi:2021:AIII} describes a way of learning fair probability distributions from biased data by explicitly modeling a latent variable that represents a hidden, unbiased label. In particular, they aim to achieve demographic parity by enforcing
 certain independencies in the learned model.
 
@@ -198,3 +217,62 @@ fair latent variable approach from \cite{Choi:2021:AIII}}
 In other words, they model the process on how biased datasets are generated. The biased labels present in the dataset are dependent on the sensitive attributes $S$ and the true fair labels $D_f$. The latent variable $D_f$ is used for decision making on future instances by inferring $P(D_f|e)$ given some evidence.
 
 The paper states that any probabilistic model can be used but that this model needs to satisfy the independence assumptions in the bayesian network.
+
+\section{Fair Tree Classifier}
+\label{sec:fairtree}
+
+The paper by \citet{Antonio:2021:arXiv} has been implemented in this thesis and the related python module. They introduce a new splitting criterion that evaluates splits in terms of the Area under curve (AUC) wrt the predicted value and the sensitive attribute. Assume that we want to learn a classifier $f$ that learns a mapping from features $X$ and predictor $\hat{Y}$ which outputs a probability of belonging to the predicted class
+
+$$
+f: X \rightarrow \hat{Y}
+$$
+
+The AUC for this predictor wrt the true labels $Y$ can be calculated as
+
+\begin{equation*}
+    AUC_Y(\hat{Y}, Y) =  \frac
+    {
+        \sum_{t_0 \in Y_{-}} \sum_{t_1 \in Y_{+}}  \textbf{1}[\hat{Y}_{t_0} < \hat{Y}_{t_1}]
+    }
+    {
+        |Y_{-}| \cdot |Y_{+}|
+    }
+\end{equation*}
+
+where $Y_-$ and $Y_+$ are the set of indexes for negative and positive instances in the true labels. $\textbf{1}$ denotes the indicator function. The authors calculate the AUC score for the predicted labels this using scikit-learn \cite{Pedregosa:2011:JMLR} and the method called roc\_auc\_score \cite{Buitinck:2013:PKDD}. When calculating the AUC wrt the sensitive attribute, denoted $AUC_s$ the authors have derived the following formula
+
+\begin{equation}
+    AUC(\hat{Y}, S) = \max(1 - AUC(\hat{Y}, S), AUC(\hat{Y}, S))
+\end{equation}
+
+The max operator maps the bounds to the range $[0.5, 1]$. The authors then introduce the splitting criterion used in their tree algorihm, Splitting Criterion AUC for Fairness (SCAFF). Which is calculated as
+
+\begin{equation*}
+    SCAFF(\hat{Y}, Y, S, \Theta) = (1 - \Theta) \cdot AUC_Y(\hat{Y}, Y) - \Theta \cdot AUC_S(\hat{Y}, S)
+\end{equation*}
+
+$\Theta$ is here a hyperparameter of the tree classifier. When $\Theta = 1$ splits are only evaluated in terms of fairness and vice versa.  As is typical with tree learning, the architecture is learned by evaluating splits at each depth and selecting the split that maximises the splitting criterion. Other hyperparameters as maximum depth, number of bins etc are also used.
+
+\section{Interpretable Machine Learning}
+
+Up until this point in the thesis, we have discussed fair machine learning models and sources of bias in the data. Another important field in machine learning that is important regarding fairness is Interpretable Machine Learning. Many methods for fairness rely on either pre-processing of the datasets to make the datasets more fair or in-processing methods that change the machine learning algorithm to reduce discrimination during training. \cite{Mehrabi:2021:CSUR} 
+
+Interpretable Machine Learning methods instead focus on understanding the mechanisms behind the decision that the machine learning model makes. This way, we can investigate how the machine learning model uses the data to make a prediction. According to \citet{Miller:2019:AIJ} interpretability is how well a human could understand the decisions in the given context. The higher the interpretability of a machine learning model, the easier it is for someone to comprehend why certain decisions or predictions have been made. \cite{Molnar:2020:Book}
+
+\subsection{Example of interpretability}
+
+Examples of interpretable machine learning models are Linear Regression, Logistic Regression and Decision Trees among many others. Linear Regression is especially interpretable, as we shall describe in this section. According to \citet{Molnar:2020:Book}, linear models can be used to model the dependence of a regression target $\boldsymbol{y}$ on some features $\boldsymbol{x}$. The learned relationships are linear and can be written for a single instance i as follows
+
+\begin{equation*}
+    \boldsymbol{y} = \boldsymbol{X} \boldsymbol{\beta} + \epsilon
+\end{equation*}
+
+Where $\beta_1$ is the weight associated with feature $X_1$. These weights can be interpreted in several ways depending on the nature of the feature.
+
+\begin{itemize}
+    \item Numerical Features: Increasing the feature by a unit of one increases the estimated outcome by $\beta_i$.
+    \item Binary Feature: Changing the binary feature form the reference category to other category increases the outcome by $\beta_i$
+    \item Categorical Feature: Create dummy variables. Interpretation of each dummy variable is the same as for binary features.
+\end{itemize}
+
+As you see, linear regression models are structured in such a way that it is easy to explicitly describe how the predictions of the models are made. Other models are also interpretable, which is described in more detail by \citet{Molnar:2020:Book}.
