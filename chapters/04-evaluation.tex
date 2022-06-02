@@ -2,6 +2,41 @@
 \chapter{Experimental Evaluation}
 \label{ch:eval}
 
+\section{Counterfactuals}
+
+\subsection{Naive Bayes With Sensitive Attributes}
+
+For the following datapoint:
+
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllllll}
+\toprule
+{} &           age & workclass &  education & marital-status &    occupation & relationship &   race &  gender &          capital-gain & hours-per-week \\
+\midrule
+46343 &  (31.6, 46.2] &   Private &  Assoc-voc &       Divorced &  Tech-support &    Unmarried &  Black &  Female &  (-4460.355, 16515.0] &   (20.6, 40.2] \\
+\bottomrule
+\end{tabular}
+}
+
+Got the following counterfactuals:
+
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllllllrrrr}
+\toprule
+{} &           age &  workclass &  education &     marital-status &    occupation &   relationship &                race &  gender &        capital-gain & hours-per-week &        O1 &   O2 &  O3 &   O4 \\
+\midrule
+155 &  (31.6, 46.2] &    Private &  Assoc-voc &  Married-AF-spouse &  Tech-support &      Unmarried &               Black &    Male &  (79128.0, 99999.0] &   (20.6, 40.2] &  0.000000 &  0.7 &   3 &  0.0 \\
+162 &  (31.6, 46.2] &    Private &  Assoc-voc &           Divorced &  Adm-clerical &      Unmarried &               Black &    Male &  (79128.0, 99999.0] &   (20.6, 40.2] &  0.000000 &  0.7 &   3 &  0.0 \\
+100 &  (31.6, 46.2] &    Private &  Assoc-voc &  Married-AF-spouse &  Adm-clerical &      Unmarried &               Black &    Male &  (58257.0, 79128.0] &   (20.6, 40.2] &  0.000000 &  0.6 &   4 &  0.0 \\
+167 &  (31.6, 46.2] &    Private &  Assoc-voc &  Married-AF-spouse &  Adm-clerical &      Unmarried &               Black &    Male &  (79128.0, 99999.0] &   (20.6, 40.2] &  0.000000 &  0.6 &   4 &  0.0 \\
+176 &  (31.6, 46.2] &    Private &  Assoc-voc &  Married-AF-spouse &  Adm-clerical &      Unmarried &               Black &    Male &  (58257.0, 79128.0] &   (20.6, 40.2] &  0.000000 &  0.6 &   4 &  0.0 \\
+2   &  (60.8, 75.4] &  Local-gov &  Doctorate &           Divorced &             ? &  Not-in-family &  Amer-Indian-Eskimo &  Female &  (79128.0, 99999.0] &   (59.8, 79.4] &  0.000000 &  0.2 &   8 &  0.0 \\
+177 &  (31.6, 46.2] &    Private &  Assoc-voc &  Married-AF-spouse &  Tech-support &      Unmarried &               Black &  Female &  (16515.0, 37386.0] &   (20.6, 40.2] &  0.419303 &  0.8 &   2 &  0.0 \\
+\bottomrule
+\end{tabular}
+}
+
+
 \instructions{
 Page budget for Evaluation: 10-15 pages
 %
@@ -10,6 +45,68 @@ Page budget for Evaluation: 10-15 pages
     \item It is strongly desired that you have empirical results, nevertheless, this may not be applicable to all types of theses.
 \end{itemize}
 }
+
+\subsection{Naive Bayes Without Sensitive Attributes}
+
+For the following datapoint:
+
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllllll}
+\toprule
+{} &             age & workclass & education & marital-status & occupation & relationship &   race &  gender &          capital-gain & hours-per-week \\
+\midrule
+23356 &  (16.927, 31.6] &         ? &   HS-grad &      Separated &          ? &    Unmarried &  Black &  Female &  (-4460.355, 16515.0] &   (20.6, 40.2] \\
+\bottomrule
+\end{tabular}
+} 
+
+We get the following counterfactuals:
+
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllllllrrrr}
+\toprule
+{} &             age &  workclass &  education &     marital-status & occupation &   relationship &                race &  gender &          capital-gain & hours-per-week &        O1 &   O2 &  O3 &   O4 \\
+\midrule
+128 &  (16.927, 31.6] &  State-gov &    HS-grad &          Separated &          ? &      Unmarried &               Black &    Male &    (79128.0, 99999.0] &   (20.6, 40.2] &  0.000000 &  0.7 &   3 &  0.0 \\
+97  &    (31.6, 46.2] &          ? &    HS-grad &          Separated &          ? &  Not-in-family &               Black &    Male &    (79128.0, 99999.0] &   (20.6, 40.2] &  0.000000 &  0.6 &   4 &  0.0 \\
+147 &  (16.927, 31.6] &  State-gov &  Doctorate &          Separated &          ? &      Unmarried &               Black &    Male &    (79128.0, 99999.0] &   (20.6, 40.2] &  0.000000 &  0.6 &   4 &  0.0 \\
+136 &    (31.6, 46.2] &  State-gov &  Doctorate &  Married-AF-spouse &          ? &        Husband &  Amer-Indian-Eskimo &  Female &  (-4460.355, 16515.0] &   (20.6, 40.2] &  0.165877 &  0.4 &   6 &  0.1 \\
+\bottomrule
+\end{tabular}
+}
+
+\subsection{Fair Bayesian Network}
+
+For the following counterfactual
+
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllllll}
+\toprule
+{} &             age & workclass & education & marital-status & occupation & relationship &   race &  gender &          capital-gain & hours-per-week \\
+\midrule
+23356 &  (16.927, 31.6] &         ? &   HS-grad &      Separated &          ? &    Unmarried &  Black &  Female &  (-4460.355, 16515.0] &   (20.6, 40.2] \\
+\bottomrule
+\end{tabular}
+}
+
+We get the following counterfactuals
+
+\resizebox{\textwidth}{!}{
+\begin{tabular}{lllllllllllrrrr}
+\toprule
+{} &             age &         workclass &   education & marital-status &       occupation &   relationship &                race &  gender &        capital-gain & hours-per-week &            O1 &   O2 &  O3 &   O4 \\
+\midrule
+111 &  (16.927, 31.6] &                 ? &        11th &      Separated &                ? &      Unmarried &               Black &  Female &  (79128.0, 99999.0] &   (79.4, 99.0] &  0.000000e+00 &  0.7 &   3 &  0.0 \\
+114 &  (16.927, 31.6] &                 ? &     HS-grad &      Separated &                ? &      Unmarried &               White &  Female &  (79128.0, 99999.0] &   (79.4, 99.0] &  0.000000e+00 &  0.7 &   3 &  0.0 \\
+162 &  (16.927, 31.6] &                 ? &        11th &      Separated &                ? &      Unmarried &               White &  Female &  (79128.0, 99999.0] &   (20.6, 40.2] &  0.000000e+00 &  0.7 &   3 &  0.1 \\
+58  &  (16.927, 31.6] &      Never-worked &     HS-grad &      Separated &                ? &      Unmarried &  Asian-Pac-Islander &  Female &  (58257.0, 79128.0] &   (79.4, 99.0] &  0.000000e+00 &  0.6 &   4 &  0.0 \\
+118 &  (16.927, 31.6] &                 ? &  Assoc-acdm &      Separated &                ? &      Unmarried &               Black &    Male &  (79128.0, 99999.0] &   (79.4, 99.0] &  0.000000e+00 &  0.6 &   4 &  0.0 \\
+172 &  (16.927, 31.6] &      Never-worked &        11th &      Separated &                ? &      Unmarried &               White &  Female &  (58257.0, 79128.0] &   (20.6, 40.2] &  0.000000e+00 &  0.6 &   4 &  0.1 \\
+\end{tabular}
+}
+
+\subsection{Fair Tree Classifier}
+
 
 \section{Experimental Setup}
 \label{sec:eval:expsetup}
