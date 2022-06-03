@@ -79,7 +79,7 @@ Important to this thesis is the work of \citet{Choi:2021:AIII} Which is a follow
 \section{Probabilistic Machine Learning}
 \label{sec:probmac}
 
-In this thesis, we will focus on probabilistic machine learning, therefore a brief introduction to this field is in place. According to \citet{Murphy:2012:Book} machine learning is usually divided into two main types. \textbf{Predictive} or \textbf{Supervised learning} approach \cite[p.~2]{Murphy:2012:Book}, the goal is to learn a mapping from inputs $x$ to outputs $y$ given a labelled set of input-output pairs
+In this thesis, we will focus on probabilistic machine learning, therefore a brief introduction to this field is in place. According to \citet{Murphy:2012:Book}, machine learning is usually divided into two main types. In \textbf{Predictive} or \textbf{Supervised learning} approach, the goal is to learn a mapping from inputs $x$ to outputs $y$ given a labelled set of input-output pairs \cite[p.~2]{Murphy:2012:Book}
 
 \begin{equation*}
     \mathcal{D} = {(x_i, y_i)}_{i=1}^N
@@ -91,7 +91,7 @@ The second type is the \textbf{descriptive} or \textbf{unsupervised learning} wh
     \mathcal{D} = {x_i}_{i=1}^N
 \end{equation*}
 
-here the goal is to find interesting patterns in the data that are inherent to the data itself without the need of labels. This problem is not as well-defined as the predictive case, and there is no obvious error metric. The third type is \textbf{reinforcement learning}, where you let an agent explore a space and reward desired behaviour through a performance or reward metric. 
+here the goal is to find interesting patterns in the data that are inherent to the data itself without the need for labels. This problem is not as well-defined as the predictive case, and there is no obvious error metric. The third type is \textbf{reinforcement learning}, where you let an agent explore a space and reward desired behaviour through a performance or reward metric. 
 
 A common way to perform supervised learning is to treat  $y$ as a random variable and estimate a mapping 
 
@@ -123,7 +123,7 @@ and for linear regression, minimising the sum of squared errors has an explicit 
     \hat{\bf{w}}_{\text{OLS}} = (\bf{X}^T\bf{X})^{-1}\bf{X}^T\bf{y}
 \end{equation*}
 
-This estimate gives us a point estimate of the model parameters. I.e one dataset produces one point estimate. This is traditionally what many machine learning algorithms do, take a dataset and calculate the most likely point estimate of the model parameters. It is reasonable to assume that the model parameters that is returned from one dataset is different to the true model parameters and it would in many cases be beneficial to know how uncertain the model parameters are. This is where the \textbf{probabilistic} approach comes in.
+This estimate gives us a point estimate of the model parameters. This is traditionally what many machine learning algorithms do, take a dataset and calculate the most likely point estimate of the model parameters. It is reasonable to assume that the model parameters that are returned from one dataset are different to the true model parameters, and it would in many cases be beneficial to know how uncertain the model parameters are. This is where the \textbf{probabilistic} approach comes in.
 
 In a probabilistic approach, we treat the input data and labels as random variables, but also the model parameters. After training, we will have a distribution of model parameters which we can sample from and simulate different realisations of our models. One example of this is \textbf{Bayesian Linear Regression}
 
@@ -143,7 +143,7 @@ And we have a full distribution of model parameters, which gives us insight into
 
 \section{Graphical Models}
 
-A graphical model is a way to represent a joint probability distribution. Nodes represent random variables and the edges between the random variables is for dependencies and the lack of edges means the random variables are conditionally independent. \cite[p.~308]{Murphy:2012:Book} There are many different graphical models and all of them tie probability theory and graph theory together in a comprehensive manner. In this section some different models are described
+A graphical model is a way to represent a joint probability distribution. Nodes represent random variables and the edges between the random variables represent dependencies, and the lack of edges means the random variables are conditionally independent. \cite[p.~308]{Murphy:2012:Book} There are many graphical models, and all of them tie probability theory and graph theory together comprehensively. We describe some different models in this section.
 
 \section{Bayesian Networks}
 
@@ -160,36 +160,81 @@ A graphical model is a way to represent a joint probability distribution. Nodes 
     \label{fig:my_label}
 \end{figure}
 
-Graphical models gives us a graphical way to represent the joint pdf. It models the conditional dependencies between random variables. From this graph, we see that the joint probability distribution of this classifier is
+Graphical models give us a graphical way to represent the joint PDF. It models the conditional dependencies between random variables. From this graph, we see that the joint probability distribution of this classifier is
 
 \begin{equation*}
     p(y, x_1, x_2, x_3, x_4) = p(y)p(x_1|y)p(x_2|y)p(x_3|y)p(x_4|y)
 \end{equation*}
 
-\subsection{naïve Bayes Classifier: Baseline Method}
+\subsection{Naïve Bayes Classifier: Baseline Method}
 \label{relatedwork:naïveBayes}
-The naïve Bayes classifier is the simplest Bayesian network, assuming that all features are independent conditionally on the class variable, hence the method being called naïve. This naïve assumption gives the model few parameters to learn and it requires little training data to achieve good performance. From the work by \citet{Zhang:2004:AAAI} we know that naïve Bayes classifiers perform well despite the assumption on independence among features due to the dependencies cancelling each other out and dependencies distributing evenly among classes.
+The naïve Bayes classifier is the simplest Bayesian network, assuming that all features are independent conditionally on the class variable, hence the name naïve Bayes. This naïve assumption gives the model few parameters to learn, and it requires little training data to achieve good performance. From the work by \citet{Zhang:2004:AAAI} we know that naïve Bayes classifiers perform well despite the assumption of independence among features due to the dependencies cancelling each other out and dependencies distributing evenly among classes.
 
-According to \citet[p.~217]{Ankan:2015:Book}, assume that we have a dataset $X = (x_1, x_2, \dots, x_N)$ with $N$ independent features and $k$ classes $C_k$ that we want to classify the data to. naïve Bayes does this by modeling the posterior distribution in terms of the joint probability
+According to \citet[p.~217]{Ankan:2015:Book}, assume that we have a dataset $X = (x_1, x_2, \dots, x_N)$ with $N$ independent features and $k$ classes $C_k$ that we want to classify the data to. naïve Bayes does this by modelling the posterior distribution in terms of the joint probability
 
 $$
 P(C_k | X) \propto P(C_k , X) = P(C_k) \prod_{i=1}^{n} P(x_i|C_k)
 $$
 
-Where the naïve assumption is that $P(x_i | X \setminus x_i , C_k) = P(x_i | C_k)$ i.e the features are mutually independent conditioned on $C_k$. Different naïve Bayes methods exist for the assumptions on the priors and likelihoods, i.e if they are Gaussian, binomial, categorical etc. The model classifies the data to the class that has the highest posterior probability. 
+Where the naïve assumption is that $P(x_i | X \setminus x_i , C_k) = P(x_i | C_k)$ i.e., the features are mutually independent conditioned on $C_k$. Different naïve Bayes methods exist for the assumptions on the priors and likelihoods, i.e. if they are Gaussian, binomial, categorical etc. The model classifies the data to the class that has the highest posterior probability. 
 
 \subsection{pgmpy: naïve Bayes}
 
-The naïve Bayes classifier that has been used is implemented in pgmpy and is used as a baseline method in the experiment described in section~\ref{sec:AdultFairnessAssessment}. The implementation in pgmpy implements a naïve Bayes method and assumes categorical distributions on all parameters. The probabilities are calculated as conditional probability tables (CPD Tables) using the MLE estimate from data. I.e calculating probabilities from the dataset by counting occurences conditioned on the class label. For more detail on how this is implemented, see pgmpy's documentation \footnote{\url{https://pgmpy.org/index.html}}.
+We have used the naïve Bayes classifier implemented in pgmpy and is used as a baseline method in the experiment described in section~\ref{sec:AdultFairnessAssessment}. The implementation in pgmpy implements a naïve Bayes method and assumes categorical distributions on all parameters. We calculated the probabilities as conditional probability tables (CPD Tables) using the MLE estimate from data. I.e. calculating probabilities from the dataset by counting occurrences conditioned on the class label. For more detail on how this is implemented, see pgmpy's documentation \footnote{\url{https://pgmpy.org/index.html}}.
 
 \subsection{Structure Learning: Hill Climb Search}
 \label{HillClimbSearch}
+According to \citet[p.~811]{Koller:2009:Book} finding a maximum-score graphical network evaluated under any decomposable scoring function is NP-hard. Thus, we have to resort to a heuristic algorithm that attempt to find the best network, but are not guaranteed to do so. We have used Hill-Climb search which try to find the best graph $G_{\text{best}}$ by selecting an initial network $G_{\emptyset}$, which in pgmpy is a network with no edges. Then we search through all possible search operations $O$ to the network (delete, add, reverse in pgmpy) and score them. We perform the change that gives the best score until convergence or the maximum number of iterations is reached. The algorithm is shown below:
+
+\begin{algorithm}
+    \caption{Hill Climb Searched with Data Perturbation}
+    \begin{algorithmic}
+        \REQUIRE $G_{\emptyset} = $ Initial Network, $D = $ fully observed dataset, score $ = $ scoring function, $O = $ search operations, search $ = $ search procedure, $t_0 = $ initial perturbation size, $\gamma = $ Reduction in perturbation size.
+        \ENSURE $G_{\text{best}} = $ Best network structure found.
+        \STATE $G \leftarrow$ Search$(G_{\emptyset}, D, \text{Score}, O)$ 
+        \STATE $G_{\text{best}} \leftarrow G$
+        \STATE $t \leftarrow t_0$
+        \FOR{$i \in \{ 1, \dots, \text{until convergence} \}$} 
+        \STATE $D' \leftarrow $ Perturb$(D,t)$
+        \STATE $G \leftarrow$ Search$(G, D', \text{Score}, O)$
+        \IF{Score$(G : D) > \text{Score}(G_{\text{best}} : D)$}
+            \STATE $G_{\text{best}} \leftarrow G$
+        \ENDIF
+        \STATE $t \leftarrow \gamma \cdot t$
+        \ENDFOR
+    \end{algorithmic}
+\end{algorithm}
+
+For more information about the algorithm and Hill Climb Search, see \cite[p.~816--819]{Koller:2009:Book} and the implementation in pgmpy which also adds some parameters like red-listed edges and non-changable edges.\footnote{\url{https:/Z/pgmpy.org/_modules/pgmpy/estimators/HillClimbSearch.html\#HillClimbSearch.estimate}}
 
 \subsection{Parameter Learning: Expectation Maximization}
 \label{Expectation Maximization}
+After we have learned the model structure, we will have to learn the parameters of the model given its structure. Since we will use a model with latent variables, Expectation Maximisation is the algorithm of choice. The expectation maximisation algorithm in general as described by \citet{Murphy:2012:Book, Bishop:2006:Book} is as follows:
+
+Consider a probabilistic model in which we collectively denote all the observed
+variables by $\boldsymbol{X}$ and the latent variables $\boldsymbol{Z}$. The joint distribution $p(\boldsymbol{X}, \boldsymbol{Z} | \boldsymbol{\theta})$ is governed by the parameters $\boldsymbol{\theta}$. We want to maximise the likelihood given by
+
+\begin{equation*}
+    p(\boldsymbol{X} | \boldsymbol{\theta}) = \sum_{\boldsymbol{X}} p(\boldsymbol{X}, \boldsymbol{Z} | \boldsymbol{\theta})
+\end{equation*}
+
+Which is not computable, as $\boldsymbol{Z}$ is unknown. Therefore the expectation step is introduced which is to compute $Q$
+
+\begin{equation*}
+    Q(\boldsymbol{\theta, \theta^{\text{old}}}) = E[\log L(\boldsymbol{\theta}; \boldsymbol{X}, \boldsymbol{Z})]
+\end{equation*}
+
+In the M step we optimise $Q$ wrt $\boldsymbol{\theta}$
+
+\begin{equation*}
+    \boldsymbol{\theta^{\text{new}}} = \argmax_{\boldsymbol{\theta}} Q(\boldsymbol{\theta, \theta^{\text{old}}})
+\end{equation*}
+
+this is done iteratively until a certain threshold is achieved. For more details on how exactly this is implemented in pgmpy, see the documentation.\footnote{\url{https://pgmpy.org/_modules/pgmpy/estimators/EM.html\#ExpectationMaximization}}
 
 \subsection{Exact Inference: Variable Elimination}
 \label{Variable Elimination}
+
 
 \section{Modeling Discrimination Process}
 \label{sec:paper1}
