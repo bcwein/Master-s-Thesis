@@ -232,10 +232,6 @@ In the M step we optimise $Q$ wrt $\boldsymbol{\theta}$
 
 this is done iteratively until a certain threshold is achieved. For more details on how exactly this is implemented in pgmpy, see the documentation.\footnote{\url{https://pgmpy.org/_modules/pgmpy/estimators/EM.html\#ExpectationMaximization}}
 
-\subsection{Exact Inference: Variable Elimination}
-\label{Variable Elimination}
-
-
 \section{Modeling Discrimination Process}
 \label{sec:paper1}
 Now that probabilistic machine learning and graphical models have been introduced, it is time to introduce the work of \citet{Choi:2021:AIII} in more detail. As discussed previously in this section. There are many sources of bias in data and it is reasonable to assume that almost all datasets out there is biased. \citet{Choi:2021:AIII} describes a way of learning fair probability distributions from biased data by explicitly modeling a latent variable that represents a hidden, unbiased label. In particular, they aim to achieve demographic parity by enforcing

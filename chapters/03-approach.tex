@@ -1,114 +1,55 @@
 \chapter{Approach}
 \label{ch:approach}
 
-\instructions{Page budget for Approach: 20-30 pages
-%
-\begin{itemize}
-    \item This chapter describes your main contributions (i.e., what you did) and the decisions that went into them (i.e., why did you did it the way you did it).
-    \item Alternative headings may be used depending on the kind of contribution(s) you make.
-\end{itemize}
-}
+\section{Overall Approach}
+To answer the three research questions mentioned in section~\ref{sec:intro:objectives} we want to compare some models find in literature. Mainly the fair Bayesian network and the fair tree classifiers. These should be evaluated on datasets used in machine learning research. We then will perform experiments evaluating the performance metrics of the models, as well as new performance metrics reflecting fairness. When we have enough data on the performance of the models, hypothesis testing will be done to evaluate whether the differences are significant.
 
-\section{Overview}
+\section{Python Code Repository: Forseti}
 
-\instructions{
-\begin{itemize}
-    \item This section should explain the high-level design
-    \item Include possibly an architecture figure that shows how the different parts fit together and what processing/technology/tools/datasets have been used for the different components.
-\end{itemize}
-%
-Name these themes based on the different components or sub-problems you are solving in your thesis.
-}
-
-\section{Data Exploration}
-
-For this thesis, exploration of approaches to achieve fairness and interpretability in machine learning algorithms is the goal. The Adult dataset \footnote{https://archive.ics.uci.edu/ml/datasets/adult} was selected for this topic. Before beginning on implementing machine learning methods and experiments, some preliminary data exploration is in order.
-
-\subsection{The Adult Dataset}
-\label{sec:adult}
-The adult dataset is a dataset extracted by Barry Becker from the 1994 US Census database, and the prediction task is to determine whether a person makes over 50k a year. It consists of the following attributes:
-
-\begin{itemize}
-    \item Age: The age of the individual (Positive integer)
-    \item Work class: The sector the individual works in (8 Categories)
-    \item fnlgwgt: A weight determined by the census bureau (Positive integer)
-    \item Education: Highest educational degree (16 categories)
-    \item Educaitional-num: Enumerated education (16 categories)
-    \item Marital Status: Marital status of individual (7 Categories)
-    \item Occupation: General type of occupation (15 categories)
-    \item Relationship: What kind of relationship the individual is to others (6 categories)
-    \item Race: What race the individual belongs to (6 Categories)
-    \item Gender: Biological sex of the individual (2 Categories)
-    \item Capital gain: Capital gain of individual (Positive integer)
-    \item Capital loss: Capital loss of the individual (Positive integer)
-    \item Native country: Native country of the individual (42 categories)
-    \item Income: Whether individual makes more than 50K or not (2 Categories)
-\end{itemize}
-
-This dataset consists of mostly categorical attributes which are not ordinal. This makes analysis quite challenging. Many models assume Gaussian distributions, which is not present in the dataset. In this dataset, there are also some sensitive attributes, most notably \emph{Gender} and \emph{Race}. One could also argue that \emph{Marital Status} and \emph{Relationship} could also be sensitive attributes.
-
-In a fair machine learning system, we would expect that the outcome in terms of income does not depend on the race, gender, marital status or relationship or the very least that the decision by the model is independent of the sensitive attributes.
-
-\subsection{Attributes correlated with income}
-
-\begin{table}
+\begin{figure}
     \centering
-    \begin{tabular}{lr}
-        \toprule
-        Attribute &  Correlation \\
-        \midrule
-        marital-status.Never-married &    -0.318782 \\
-        relationship.Own-child       &    -0.225691 \\
-        relationship.Not-in-family   &    -0.190372 \\
-        occupation.Other-service     &    -0.155254 \\
-        relationship.Unmarried       &    -0.143642 \\
-        education.HS-grad            &    -0.130706 \\
-        race.Black                   &    -0.090448 \\
-        education.11th               &    -0.086728 \\
-        occupation.Adm-clerical      &    -0.086475 \\
-        relationship.Other-relative  &    -0.085601 \\
-        \bottomrule
-    \end{tabular}
-    \caption{Features that are negatively correlated with income.}
-    \label{fig:negative_income_correaltion}
-\end{table}
+    \includegraphics[width=\linewidth]{figures/tegning.png}
+    \caption{Setup of Forseti Python Module}
+    \label{fig:forseti}
+\end{figure}
 
-\begin{table}
-    \centering
-    \begin{tabular}{lr}
-        \toprule
-        Attribute &  Correlation \\
-        \midrule
-        education.Masters                 &     0.174184 \\
-        education.Bachelors               &     0.180371 \\
-        occupation.Prof-specialty         &     0.188793 \\
-        occupation.Exec-managerial        &     0.210938 \\
-        gender.Male                       &     0.214628 \\
-        capital-gain                      &     0.223013 \\
-        hours-per-week                    &     0.227687 \\
-        age                               &     0.230369 \\
-        marital-status.Married-civ-spouse &     0.445853 \\
-        \bottomrule
-    \end{tabular}
-    \caption{Features that are positively correlated with income.}
-    \label{fig:positive_income_correaltion}
-\end{table}
-
-We see  in that there are some categories in the following attributes that are correlated with income
+We manage the code through GitHub, a python module named Forseti as well as some Jupyter notebooks. In figure \ref{fig:forseti} the structure of the module is shown. It has the following modules:
 
 \begin{itemize}
-    \item Marital Status
-    \item Age
-    \item Hours per week
-    \item Capital Gain
-    \item Occupation
-    \item Relationship
-    \item Education
-    \item Gender
-    \item Race
+    \item Bayesnet: This module contains classes of Bayesian networks.
+    \item Datasets: This module contains functions for generating synthetic datasets.
+    \item Datproc: Data processing module.
+    \item Fairness: Fairness metrics and fairness reports.
+    \item Tree: Tree based methods and classifiers.
 \end{itemize}
 
-We observe that our identified sensitive attributes are correlated with income. The challenge now is that we have to learn a model that does not treat individuals belonging to different classes in the sensitive attribute unfairly.
+The code and its documentation is available at GitHub\footnote{\url{https://github.com/bcwein/forseti}}. The aim of organising the code in such a way was to make it as easy as possible to let others run the code on their own systems. How to do this is described in the next section.
+
+\subsection{Setup}
+
+The environment used in forseti is available in the file \emph{environment.yml} and one can setup the environment using Anaconda. See the documentation \footnote{\url{https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html\#creating-an-environment-from-an-environment-yml-file}} on how to do this.
+
+If one prefers to not use anaconda, the necessary packages are as follows:
+
+\begin{itemize}
+    \item Python
+    \item Pytest
+    \item black
+    \item jupyter
+    \item ipykernel
+    \item pandas
+    \item seaborn
+    \item pip
+    \item pgmpy
+\end{itemize}
+
+\section{Data Exploration and Selection}
+
+For this thesis, exploration of approaches to achieve fairness and interpretability in machine learning algorithms is the goal. The Adult dataset \footnote{\url{https://archive.ics.uci.edu/ml/datasets/adult}} was selected for this topic. Before beginning on implementing machine learning methods and experiments, some preliminary data exploration is in order.
+
+\subsection{Adult Dataset}
+
+To select the features of interest and as an initial data exploration. We will investigate the correlation between the features and the dependent variable \emph{income}. Since almost all the attributes are categorical, we calculate correlation using dummy variables. Which means, transforming categorical attributes to columns of binary attributes. We then explore which dummy variables that have the highest absolute correlations. We interpret the weight of each variable as the absolute sum of its dummies. 
 
 \subsection{Compas Dataset}
 The Compas dataset contains records for defendants from Broward County indicating their jail and prison times, demographics, criminal histories and Compas risk scores from 2013 to 2014 \cite{Mehrabi:2021:CSUR}. This dataset is high dimensional with a mix of categorical, numerical and date time columns. For this thesis, the focus has not been to implement the best model out there, but rather compare the fairness between models. Therefore, we have limited ourselves to the following attributes when training our algorithms
@@ -260,83 +201,86 @@ This method uses two methods implemented in pgmpy \cite{Ankan:2015:SCIPY}. These
     \caption{latentFairClassifier trained on Adult Dataset. The nodes are $R$: race, $G$: gender, $F$: latent fair labels, $A$: Age, $E$: Education, $R_e$: Relationship, $C$: Capital gain, $M$: Marital Status, $W$: Work class, $H$: Hours-per-week, $O$: Occupation and $I$: Income.}
     \label{fig:latentFairClassifierAdult}
 \end{figure}
-Inference has been performed by evaluating $P(F | A, E, R_e, C, M, W, H, O)$ on a test dataset of unobserved labels. This is done in pgmpy by using Variable Elimination which is described in section \ref{Variable Elimination}.
+Inference has been performed by evaluating $P(F | A, E, R_e, C, M, W, H, O)$ on a test dataset of unobserved labels.
 
-\section{Experiment 1: FairBN, FairTreeClassifier vs NB}
-\label{sec:AdultFairnessAssessment}
+\section{Fair Tree Classifier}
+The fair tree classifier, described in detail in section~\ref{sec:fairtree}. \citet{Antonio:2021:arXiv} kindly provided their code on GitHub, which made implementing this over to Forseti a bit easier. The code is available in their repository\footnote{\url{https://bit.ly/3x937Nr}}. We added their decision tree classifier and fair random forest classifier classes to Forseti and train and test the models on the same datasets as the fair tree classifier.
 
-Seven different predictions were evaluated in this experiment. They are the following:
+\section{Experiment 1: Test Models on Compas and Adult Dataset}
+
+After implementing the Fair Bayesian Network and the Fair Tree Classifier. We wanted to evaluate the models on the Adult Dataset and Compas Dataset. To evaluate the models we had to choose some performance metrics. A combination of traditional performance metrics and a fairness score was desired. The fairness score used is the one described in section~\ref{sec:demparscore}. For the traditional metrics there were several pros and cons for each of them. We will go through each one of them and explain the motivation for using that particular scoring method.
+
+\subsection{Accuracy}
+
+We use the accuracy score as implemented in Scikit Learn. Which follows the following formula
+
+\begin{equation*}
+    A(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples} - 1} 1(\hat{y}_i = y_i)
+\end{equation*}
+
+Accuracy is a very intuitive coring function for predictions, as it can be interpreted as the ratio of correct classifications. The problem with accuracy as a scoring function is when datasets are imbalanced, the scoring function also suffers and are biased toward the most prominent class.
+
+\subsection{Balanced Accuracy}
+
+Balanced Accuracy is calculated as follows
+
+\begin{equation*}
+    BA(y, \hat{y}) = \frac{1}{\sum \hat{w}_i} \sum_i 1(\hat{y}_i = y_i)\hat{w}_i
+\end{equation*}
+
+where $\hat{w}_i$ is sample weight of the i-th sample and the weight is adjusted to 
+
+\begin{equation*}
+    \hat{w}_i = \frac{w_i}{\sum_j 1(y_j = y_i)w_j}
+\end{equation*}
+
+Balanced Accuracy is equal to the arithmetic mean of the sensitivity and specificity in the binary case. Since this accuracy score scales with imbalanced datasets it gives a more clear picture of how well the classifier performs and adjusts if the classifier takes advantage of the imbalance.
+
+\subsection{F1 Score}
+
+The F1 score is defined as the harmonic mean of precision and recall and thus reflect. We chose to add F1 score as it is a commonly used score in machine learning and the score reflects how well the model is able to maximise precision and recall and not have a huge disparity between them. One challenge with F1 score is that it ignores true negatives. 
+
+\subsection{Specificity}
+
+And lastly, we calculate the specificity (true negative rate). Which is calculated from the confusion matrix as follows
+
+\begin{equation*}
+    TNR(\hat{y}, y) = \frac{TN}{N}
+\end{equation*}
+
+We mainly chose this metric since F1 score ignores true negatives and by having this in our fairness report we have some information with regard to true negatives.
+
+\subsection{ROC Curve}
+
+We also want to calculate the ROC curve and plot it to see the threshold independent performance of the model. This requires us to also get the predicted probability of positive outcome for the models. When we have the predicted probabilities and the true class labels. We use the different probability scores as thresholds, sort them and calculate the TPR and FPR for each probability score and plot TPR with FPR to produce the ROC curve. We use the method \emph{plot\_roc\_curve} in sklearn.
+
+\subsection{Model Selection}
+
+For the first experiment, we also want to compare our fair models with some baseline models. Additionally, we want to explore the hyperparameter-space of models that have hyperparameters. This led us to the following models to evaluate
 
 \begin{itemize}
     \item \emph{FairBN}: Training a Fair Bayesian Network and doing inference on the latent fair variable.
     \item  \emph{IncomeBN}: Same model as FairBN. prediction is done on the variable Income instead of the latent fair attribute.
-    \item \emph{NBSens} is a naive bayes classifier trained on all of the attributes available. 
-    \item \emph{NB} is a naive bayes classifier trained on the dataset without the sensitive attributes. 
+    \item \emph{NBSens} is a naïve bayes classifier trained on all of the attributes available.
+    \item \emph{NB} is a naïve bayes classifier trained on the dataset without the sensitive attributes.
     \item \emph{FRFC03}: Fair Random Forest classifier with $\Theta = 0.3$
     \item \emph{FRFC05}: Fair Random Forest classifier with $\Theta = 0.5$
     \item \emph{FRFC07}: Fair Random Forest classifier with $\Theta = 0.7$
-\end{itemize} . 
+\end{itemize}
 
-The predictions have been evaluated using the traditional performance metrics \emph{Accuracy}, \emph{Balanced Accuracy}, \emph{F1 Score} and \emph{Specificity}. For fairness, demographic parity score is calculated both independent group fairness and for intersectional group fairness as described in section~\ref{sec:demparscore}. To see the detailed results, these are available in the appendix. See~\ref{app:experiment1}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.49\linewidth]{figures/adult_fairbn_parity.png}
-    \includegraphics[width=0.49\linewidth]{figures/compas_fairbn_parity.png}
-    \caption{Intersectional Parity Score for fair bayesian network vs naive bayes.}
-    \label{fig:exp1fairBNparity}
-\end{figure}
-
-\subsection{Fair Bayesian Network}
-
-After training the fair bayesian network classifier on the adult and compas dataset, we get an intersectional parity score of $0.87$ and $0.91$ respectively. This is better than the inherent parity score in the dataset labels, which is $0.81$ and $0.51$ respectively. These results and how the different methods compare to one another is shown in figure~\ref{fig:exp1fairBNparity}.
-
-In terms of accuracy and traditional performance of the model, we observe that there is a tradeoff between performance and fairness. This is best shown in the ROC curve shown in figure~\ref{fig:exp1fairBNROC}. There is a slight drop in the fair bayesian network compared to the naive bayes method.
-
-We also observe a quite significant performance difference between the adult dataset and the compas dataset. Why this is is not explored further in this thesis as we are interested in seeing differences in performance with respect to fairness.  
-\begin{figure}
-    \centering
-    \includegraphics[width=0.49\linewidth]{figures/adult_fairbn_roc.png}
-    \includegraphics[width=0.49\linewidth]{figures/compas_frfc_roc.png}
-    \caption{ROC curve for fair bayesian network vs naive bayes.}
-    \label{fig:exp1fairBNROC}
-\end{figure}
-
-\subsection{Fair Random Forest Classifier}
-
-\citet{Antonio:2021:arXiv} kindly provided their code on GitHub, which made implementing this over to Forseti a bit easier. The code is available in their repository\footnote{\url{https://bit.ly/3x937Nr}}. We ran the same experiments using their classifier on the adult dataset and compas dataset. Rather interestingly, we do not observe and improvement in intersectional parity in the adult dataset for any of the methods with the inherent intersectional parity for the dataset being $0.810$ and the best fair random forest classifier with $\Theta = 0.3$ having an intersectional parity of $0.78$. Which is counterintuitive to the claimed meaning behind the hyperparameter $\Theta$ stated by the authors.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.49\linewidth]{figures/adult_frfc_parity.png}
-    \includegraphics[width=0.49\linewidth]{figures/compas_frfc_parity.png}
-    \caption{Parity score for fair random forest classifier.}
-    \label{fig:exp1FRFCparity}
-\end{figure}
-
-For the Compas dataset, things are looking better with the models with $\Theta \in \{0.3, 0.7\}$ having higher intersectional parity scores than is inherent in the dataset labels. Still, the results given the stated meaning behind $\Theta$ is counterintuitive. The parity scores are shown in figure~\ref{fig:exp1FRFCparity}. The ROC curve for the different datasets is shown in figure~\ref{fig:exp1FRFCROC}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.49\linewidth]{figures/adult_frfc_roc.png}
-    \includegraphics[width=0.49\linewidth]{figures/compas_frfc_roc.png}
-    \caption{ROC curve for fair random forest classifier.}
-    \label{fig:exp1FRFCROC}
-\end{figure}
-
-\subsection{Next experiments}
-
-The results in the first experiment shed some light on the challenge of calculating fairness. The fair bayesian network classifier got higher parity scores as expected but for the random forest classifier, unexplained behaviour of the model with respect to the hyperparameter was observed. Since the parity score used in this experiment is a new and self proposed metric of fairness, this should be investigated further to evaluate its validity.
-
-\citet{Antonio:2021:arXiv} claim that they have made a classifier able to give more fair predictions, and using a hyperparameter $\Theta$ that give more accurate predictions when $\Theta \rightarrow 0$ and more fair predictions when $\Theta \rightarrow 1$. We fail to reproduce these results when calculating parity score for the models. The authors themselves do not calculate intersectional parity score, but rather $AUC_S$ with respect to the individual sensitive attributes.
-
-Due to these observations, we chose to focus on how to calculate fairness and what are the limitations of the respective fairness metrics for the next iteration of experiments.
+naïve Bayes with and without serves as the baseline method. Removing the sensitive attributes serves as a first attempt at achieving fairness by not allowing the model to explicitly use the sensitive attributes for prediction. We expect to see that the fair machine learning methods performs better in regard to fairness to the naïve Bayes model. Otherwise, there is no reason to use the fair methods. The results of the first experiment are shown in section~\ref{sec:result:experiment1}.
 
 \section{Experiment 2: Performance on synthetic dataset and comparison of performance metrics.}
 
-The two models that have been implemented in the first round of experiments, namely the fair bayesian network introduced by \citet{Choi:2021:AIII} and the Fair Tree Classifier introduced by \citet{Antonio:2021:arXiv}. These classifiers have two different ways of evaluating fairness that is the motivation behind their design. In the work of \citet{Choi:2021:AIII} the model was designed in terms of demographic parity by modelling a bayesian network in such a way that the sensitive attributes are independent of the predictions but still used for learning the parameters of the distribution of fair labels. In the work of \citet{Antonio:2021:arXiv} they use strong demographic parity as motivation for their model. They implement a tree based method where splits are evaluated using the threshold-independent measure of AUC with respect to the labels of the dataset and  regularised using AUC with respect to the sensitive attributes. 
+\subsection{Motivation for experiment}
 
-These methods were compared in the first round of experiments described in section~\ref{sec:AdultFairnessAssessment} the performance of the tree based methods were not as expected. It failed to learn more fair predictions as evaluated by the parity score (see section~\ref{sec:demparscore}). In this experiment, different fairness metrics will be evaluated for both models on synthetic datasets where the amount of unfairness is in our control.
+The results in the first experiment shed some light on the challenge of calculating fairness. The fair Bayesian network classifier got higher parity scores as expected but for the random forest classifier, unexplained behaviour of the model with respect to the hyperparameter was observed. Since the parity score used in this experiment is a new and self proposed metric of fairness, this should be investigated further to evaluate its validity
+
+\citet{Antonio:2021:arXiv} claim that they have made a classifier able to give more fair predictions, and using a hyperparameter $\Theta$ that give more accurate predictions when $\Theta \rightarrow 0$ and more fair predictions when $\Theta \rightarrow 1$. We fail to reproduce these results when calculating parity score for the models. The authors themselves do not calculate intersectional parity score, but rather $AUC_S$ with respect to the individual sensitive attributes. Due to these observations, we chose to focus on how to calculate fairness and what are the limitations of the respective fairness metrics for the next iteration of experiments.
+
+The two models that have been implemented in the first round of experiments, namely the fair Bayesian network introduced by \citet{Choi:2021:AIII} and the Fair Tree Classifier introduced by \citet{Antonio:2021:arXiv}. These classifiers have two different ways of evaluating fairness that is the motivation behind their design. In the work of \citet{Choi:2021:AIII} the model was designed in terms of demographic parity by modelling a Bayesian network in such a way that the sensitive attributes are independent of the predictions but still used for learning the parameters of the distribution of fair labels. In the work of \citet{Antonio:2021:arXiv} they use strong demographic parity as motivation for their model. They implement a tree based method where splits are evaluated using the threshold-independent measure of AUC with respect to the labels of the dataset and  regularised using AUC with respect to the sensitive attributes. 
+
+These methods were compared in the first round of experiments, described in section~\ref{sec:AdultFairnessAssessment}, the performance of the tree based methods were not as expected. It failed to learn more fair predictions as evaluated by the parity score (see section~\ref{sec:demparscore}). In this experiment, different fairness metrics will be evaluated for both models on synthetic datasets where the amount of unfairness is in our control.
 
 \subsection{Generating Synthetic Data}
 
@@ -480,7 +424,7 @@ When evaluating the models in terms of F1 Score, we observe that the fair method
     \label{fig:specsynth}
 \end{figure}
 
-Since F1 Score is biased with respect to true negatives, we calculate the Specificity of the models as well. The distribution of specificity for the different models are shown in figure~\ref{fig:specsynth}. We observe that the fair methods has a higher variance in their specificity as compared to the Naive Bayesian methods as well as the unfair predictions of the fair bayesian network. $95\%$ of the specificity values are at $0.3$ or higher with mean at $0.61$. For fair random forest classifier, these values are $0.0$ and $0.44$ respectively.
+Since F1 Score is biased with respect to true negatives, we calculate the Specificity of the models as well. The distribution of specificity for the different models are shown in figure~\ref{fig:specsynth}. We observe that the fair methods has a higher variance in their specificity as compared to the naïve Bayesian methods as well as the unfair predictions of the fair bayesian network. $95\%$ of the specificity values are at $0.3$ or higher with mean at $0.61$. For fair random forest classifier, these values are $0.0$ and $0.44$ respectively.
 
 \subsubsection{Intersectional parity score}
 
@@ -517,7 +461,7 @@ Lastly, we evaluate the models in terms of Kullback-Leibler Divergence. Here we 
 
 \section{Interpretable Machine Learning}
 
-Some of the models that we have trained are interpretable. These are the Naive Bayesian models and the Fair Bayesian Network. While we have implemented a fair random forest method, this is not immediately interpretable. Therefore, we will train decision trees on the data using ScikitLearn to see the decision behind the predictions as well as the importance of features. Additionally, an effort on trying to extract the feature importance in the random forests model.
+Some of the models that we have trained are interpretable. These are the naïve Bayesian models and the Fair Bayesian Network. While we have implemented a fair random forest method, this is not immediately interpretable. Therefore, we will train decision trees on the data using ScikitLearn to see the decision behind the predictions as well as the importance of features. Additionally, an effort on trying to extract the feature importance in the random forests model.
 
 \subsection{Interpreting Decision Trees}
 
@@ -539,9 +483,9 @@ We will do this for the datasets that have been used in the previous experiments
 
 
 
-\subsection{Interpreting Naive Bayes}
+\subsection{Interpreting naïve Bayes}
 
-As described in section~\ref{relatedwork:naivebayes}, the Naive Bayes classifier assumes that all features are mutually independent, conditioned on the class labels. We can therefore interpret the contributions of the different attributes through the conditional probabilities that the Naive Bayes classifier has learned \cite[p.~142]{Molnar:2020:Book}.
+As described in section~\ref{relatedwork:naïvebayes}, the naïve Bayes classifier assumes that all features are mutually independent, conditioned on the class labels. We can therefore interpret the contributions of the different attributes through the conditional probabilities that the naïve Bayes classifier has learned \cite[p.~142]{Molnar:2020:Book}.
 
 The way we have chosen to do this is like so: Assume that a feature $X_i$ in a dataset $\boldsymbol{X}$ is informative. Then we would expect that the likelihood on $X_i$ is very different given the class $Y$
 
