@@ -83,7 +83,7 @@ A challenge when working with multiple sensitive attributes and multivariate sen
 
 \subsection{Scoring Function: Demographic Parity Score}
 \label{sec:demparscore}
-We defined anew scoring function based on demographic parity in equation~\ref{eq:dempar}, where $\hat{Y}$ is the predictor and $S$ the sensitive attribute. This equation can be generalised to the case where we have a categorical sensitive attribute with $K$ classes.
+We defined a new scoring function based on demographic parity in equation~\ref{eq:dempar}, where $\hat{Y}$ is the predictor and $S$ the sensitive attribute. This equation can be generalised to the case where we have a categorical sensitive attribute with $K$ classes.
 
 $$
 P(\hat{Y} | S_i) = P(\hat{Y} | S_j) \qquad i, j \in \{0, \dots, K-1\}, \qquad i \neq j
@@ -261,8 +261,8 @@ For the first experiment, we also want to compare our fair models with some base
 \begin{itemize}
     \item \emph{FairBN}: Training a Fair Bayesian Network and doing inference on the latent fair variable.
     \item  \emph{IncomeBN}: Same model as FairBN. prediction is done on the variable Income instead of the latent fair attribute.
-    \item \emph{NBSens} is a naïve bayes classifier trained on all of the attributes available.
-    \item \emph{NB} is a naïve bayes classifier trained on the dataset without the sensitive attributes.
+    \item \emph{NBSens} is a naïve Bayes classifier trained on all of the attributes available.
+    \item \emph{NB} is a naïve Bayes classifier trained on the dataset without the sensitive attributes.
     \item \emph{FRFC03}: Fair Random Forest classifier with $\Theta = 0.3$
     \item \emph{FRFC05}: Fair Random Forest classifier with $\Theta = 0.5$
     \item \emph{FRFC07}: Fair Random Forest classifier with $\Theta = 0.7$
@@ -274,17 +274,26 @@ naïve Bayes with and without serves as the baseline method. Removing the sensit
 
 \subsection{Motivation for experiment}
 
-The results in the first experiment shed some light on the challenge of calculating fairness. The fair Bayesian network classifier got higher parity scores as expected but for the random forest classifier, unexplained behaviour of the model with respect to the hyperparameter was observed. Since the parity score used in this experiment is a new and self proposed metric of fairness, this should be investigated further to evaluate its validity
+The results in the first experiment shed some light on the challenge of calculating fairness. The fair Bayesian network classifier got higher parity scores as expected but for the random forest classifier, unexplained behaviour of the model with respect to the hyperparameter was observed. Since the parity score used in this experiment is a new and self proposed metric of fairness, this should be investigated further to evaluate its validity.
 
 \citet{Antonio:2021:arXiv} claim that they have made a classifier able to give more fair predictions, and using a hyperparameter $\Theta$ that give more accurate predictions when $\Theta \rightarrow 0$ and more fair predictions when $\Theta \rightarrow 1$. We fail to reproduce these results when calculating parity score for the models. The authors themselves do not calculate intersectional parity score, but rather $AUC_S$ with respect to the individual sensitive attributes. Due to these observations, we chose to focus on how to calculate fairness and what are the limitations of the respective fairness metrics for the next iteration of experiments.
 
-The two models that have been implemented in the first round of experiments, namely the fair Bayesian network introduced by \citet{Choi:2021:AIII} and the Fair Tree Classifier introduced by \citet{Antonio:2021:arXiv}. These classifiers have two different ways of evaluating fairness that is the motivation behind their design. In the work of \citet{Choi:2021:AIII} the model was designed in terms of demographic parity by modelling a Bayesian network in such a way that the sensitive attributes are independent of the predictions but still used for learning the parameters of the distribution of fair labels. In the work of \citet{Antonio:2021:arXiv} they use strong demographic parity as motivation for their model. They implement a tree based method where splits are evaluated using the threshold-independent measure of AUC with respect to the labels of the dataset and  regularised using AUC with respect to the sensitive attributes. 
+The two models that have been implemented in the first round of experiments, namely the fair Bayesian network introduced by and the Fair Tree Classifier introduced by. These classifiers have two different ways of evaluating fairness that is the motivation behind their design. In the work of \citet{Choi:2021:AIII} the model was designed in terms of demographic parity by modelling a Bayesian network in such a way that the sensitive attributes are independent of the predictions but still used for learning the parameters of the distribution of fair labels. In the work of \citet{Antonio:2021:arXiv} they use strong demographic parity as motivation for their model. They implement a tree based method where splits are evaluated using the threshold-independent measure of AUC with respect to the labels of the dataset and  regularised using AUC with respect to the sensitive attributes. 
 
-These methods were compared in the first round of experiments, described in section~\ref{sec:AdultFairnessAssessment}, the performance of the tree based methods were not as expected. It failed to learn more fair predictions as evaluated by the parity score (see section~\ref{sec:demparscore}). In this experiment, different fairness metrics will be evaluated for both models on synthetic datasets where the amount of unfairness is in our control.
+\subsection{Experiment Design}
+
+There are some question that have arisen from the first round of experiments and some improvements that we wanted to implement. These are
+
+\begin{enumerate}
+    \item Does demographic parity score capture fairness? \label{ex2:parityscore}
+    \item What other measures of fairness can we introduce that are more well established? \label{ex2:fairnessmeasure}
+    \item How does the different performance metrics used by the different authors compare?
+    \item Collect enough samples to perform hypothesis testing.
+\end{enumerate}
 
 \subsection{Generating Synthetic Data}
 
-We implemented an algorithm for generating synthetic datasets with numerical (Gaussian) features as well as two sensitive features, gender, and race. The dataset can be either informative or non-informative. If the dataset is informative, the features are dependent on the sensitive attributes. I,e there is bias in the data with respect to the sensitive attributes. The dataset is generated the following way. The first attribute, gender $G_s$, is assumed to follow a bernoulli distribution
+To address question~\ref{ex2:parityscore}, we wanted to generate a synthetic dataset where we are in control of the bias in the data to see how the fairness measures fares. We implemented an algorithm for generating synthetic datasets with numerical (Gaussian) features as well as two sensitive features, gender, and race. The dataset can be either informative or non-informative. If the dataset is informative, the features are dependent on the sensitive attributes. I.e., there is bias in the data with respect to the sensitive attributes. We generate the dataset in the following way. The first attribute, gender $G_s$, is assumed to follow a Bernoulli distribution
 
 \begin{equation*}
     G_s \sim B(n, p)
@@ -302,7 +311,7 @@ Which has PMF
     f_{R_s}(R_s = i) = \boldsymbol{\theta}_i, \qquad i \in \{ 1, \dots, k\}
 \end{equation*}
 
-where $\boldsymbol{\theta}$ is a vector of $k$ event probabilities $p_i$. $(p_i \geq 0, \sum p_i = 1)$. We want to initilise $\boldsymbol{\theta}$ randomly and this is done by sampling $k$ numbers from $\tau$ wich follows the standard half-normal distribution
+where $\boldsymbol{\theta}$ is a vector of $k$ event probabilities $p_i$. $(p_i \geq 0, \sum p_i = 1)$. We want to initialise $\boldsymbol{\theta}$ randomly and this is done by sampling $k$ numbers from $\tau$ which follows the standard half-normal distribution
 
 \begin{equation*}
     \tau \sim |N(0, 1)|
@@ -325,7 +334,7 @@ The numerical values of the sensitive attributes are mapped to strings using a d
 \end{figure}
 
 
-We define a separator parameter $\Theta$ which is used to model the seperation between the sensitive classes. We sample $X_1$ and $X_2$ the following way conditionally on the sensitive attribute $G_s$
+We define a separator parameter $\Theta$ which is used to model the separation between the sensitive classes. We sample $X_1$ and $X_2$ the following way conditionally on the sensitive attribute $G_s$
 
 \begin{equation*}
     \begin{aligned}
@@ -342,7 +351,7 @@ And the same for $X_2$. The same principle is used for $X_3$ and $X_4$ but with 
     \end{aligned}
 \end{equation*}
 
-and the same for $X_4$. Then lastly, to calculate the labels of the dataset we take the sum of all the numerical features $X = \{ X_1, X_2, X_3, X_4 \}$ and calculate the median of all the sums for each datapoint. If the sum is above the median, it gets labeled 1, otherwise, 0.
+and the same for $X_4$. Then lastly, to calculate the labels of the dataset we take the sum of all the numerical features $X = \{ X_1, X_2, X_3, X_4 \}$ and calculate the median of all the sums for each data point. If the sum is above the median, it gets labeled 1, otherwise, 0.
 
 This can be summarised in algorithm~\ref{alg:datasetgen}
 
@@ -380,7 +389,7 @@ This can be summarised in algorithm~\ref{alg:datasetgen}
 
 \subsection{Fairness Performance Measure}
 
-The performance metric used for the models up to this points it the parity score metric as described in Section.~\ref{sec:demparscore}. This score is based on the notion that the likelihood of positive outcome is independent of the sensitive attributes. There is another measure that is similar to this. That is Kullback-Leibler divergence. Which according to \citet{Mackay:2003:information} is calculated as 
+The performance metric used for the models up to this points is the parity score metric as described in Section.~\ref{sec:demparscore}. This score is based on the notion that the likelihood of positive outcome is independent of the sensitive attributes. There is another measure that is similar to this. That is Kullback-Leibler divergence. Which according to \citet{Mackay:2003:information} is calculated as 
 
 \begin{equation*}
     D_KL(P ||Q) = \sum_x \log\frac{P(x)}{Q(x)}
@@ -400,64 +409,33 @@ and
 
 Under demographic parity, we want $Q \perp\!\!\!\perp P , S$ and thus a Kullback-Leibler Divergence of 0. Kullback-Leibler Divergence is limited to two distributions though there are generalisations. For this round of experiments we limit ourselves to the binary case and calculate the divergence in the binary cases and compare them to the other metrics.
 
-\subsection{Estimating Model Performance}
+\subsection{Hypothesis Tests}
 
-In the second round of experiments, we want to estimate the model performance distributions. To do this, we ran 100 synthetic dataset generations and trained models on the synthetic datasets and evaluate them on a test dataset. For each iteration the train-test split is $70\%$ for the training set and $30\%$ for the test dataset. In this section the different results are presented.
+We want to perform hypothesis testing on the performance metrics of different models. Assume that we have samples of an unspecified performance metric for two different models trained on the same dataset. Let us denote the two distributions $X$ and $Y$. 
 
-\subsubsection{F1 Score}
+We have chosen to use non-parametric hypothesis tests, as we do not want to make assumptions on the kind of distribution the samples have. Since the samples are of model performance of two machine learning models trained on the same dataset, the samples will be dependent on each other. We therefore select the Wilcoxon signed-rank test as the testing method of choice. This test was introduced and named after \citet{Wilcoxon:1945:Biometrics}. The Wilcoxon signed-ranked test calculates the differences between the ranked samples and test whether or not the differences are symmetric around zero. We will test the following hypotheses, shown in table~\ref{tab:hypothesis}.
 
-\begin{figure}
+\begin{table}
     \centering
-    \includegraphics[width=\linewidth]{figures/F1score-synthethic.png}
-    \caption{F1 Scores of the different models on 100 synthetic datasets. Higher is better.}
-    \label{fig:f1synth}
-\end{figure}
+    \begin{tabular}{p{10cm}lll}
+        \hline
+        \textbf{Hypothesis} & $\boldsymbol{H_0}$ & $\boldsymbol{H_1}$ & $\boldsymbol{\alpha}$ \\
+        \hline
+        \hline
+        FairBN ($Y$) has a better intersectional parity score than naïve Bayes ($X$) without sensitive attributes & $X = Y$ & $X < Y$ & $0.01$ \\ \hline
+        FRFC ($Y$) has a better intersectional parity score than naïve Bayes ($X$) without sensitive attributes & $X = Y$ & $X < Y$ & $0.01$ \\ \hline
+        FairBN ($Y$) has a better intersectional parity score than FRFC ($X$) & $X = Y$ & $X < Y$ & $0.01$ \\ \hline
+        FairBN ($Y$) has a better KLD w.r.t. Gender than FRFC ($X$) & $X = Y$ & $X > Y$ & $0.05$ \\ \hline
+    \end{tabular}
+    \caption{List of hypothesis}
+    \label{tab:hypothesis}
+\end{table}
 
-When evaluating the models in terms of F1 Score, we observe that the fair methods have lower but acceptable F1 Scores. For the fair bayesian network classifier $95\%$ of the F1 scores is at $0.4$ or higher with mean at $0.6$. For the fair random forest classifier, these values are $0.0$ and $0.63$. We see from the plot in figure~\ref{fig:f1synt} that the F1 score of the fair bayesian network is on average lower than for fair random forest classifier but with lower variance.
+\subsection{Experiment Setup}
 
-\subsubsection{Specificity}
+We ran 100 synthetic dataset generations and trained the models on the synthetic datasets and evaluate them on a test dataset. For each iteration the train-test split is $70\%$ for the training set and $30\%$ for the test dataset. We calculated the same performance metrics as in the first experiment. Additionally, we also introduce Kullback-Leibler Divergence w.r.t. Gender. 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/Specificity-synthetic.png}
-    \caption{Specificity of the different models on 100 synthetic datasets. Higher is better}
-    \label{fig:specsynth}
-\end{figure}
-
-Since F1 Score is biased with respect to true negatives, we calculate the Specificity of the models as well. The distribution of specificity for the different models are shown in figure~\ref{fig:specsynth}. We observe that the fair methods has a higher variance in their specificity as compared to the naïve Bayesian methods as well as the unfair predictions of the fair bayesian network. $95\%$ of the specificity values are at $0.3$ or higher with mean at $0.61$. For fair random forest classifier, these values are $0.0$ and $0.44$ respectively.
-
-\subsubsection{Intersectional parity score}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/intparscore-synthetic.png}
-    \caption{Intersectional Parity Score of the different models on 100 synthetic datasets. Higher is better.}
-    \label{fig:intpar}
-\end{figure}
-
-In terms of intersectional parity score, i.e. average demographic parity across all subgroups of sensitive attributes, we see that the fair bayesian network is able to consistently have more fair decisions. See figure~\ref{fig:intpar}. On average the mean parity score for the FairBN classifier is $0.70$ with the 5th percentile at $0.50$. For the fair random forest classifier these values are $0.54$ and $0.0$ respectively.
- 
-\subsubsection{AUC Gender}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/intparscore-synthetic.png}
-    \caption{AUC wrt Gender of the different models on 100 synthetic datasets. Lower is better.}
-    \label{fig:aucgender}
-\end{figure}
-
-In the paper by \citet{Antonio:2021:arXiv} they propose use AUC wrt gender to evaluate splits which are more fair. Interestingly, while the fair random forest method is based on selecting splits that minimise the AUC wrt gender, the model fares quite similarly to the Naibe Bayes models and LabelBN. See figure~\ref{fig:aucgender} The AUC is even higher than what is inherent in the labels of the dataset itself and predictions are in this sense more discriminatory than what is present in the true labels. The only model to minimise AUC more than the inherent dataset labels is FairBN. FairBN has a mean AUC of $0.56$ and a 5th percentile of $0.51$. While for the fair random forest classifier, these values are $0.72$ and $0.51$ respectively.
-
-\subsubsection{Kullback-Leibler Divergence}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figures/kldg-synthetic.png}
-    \caption{Kullback-Leibler Divergence of the different models on 100 synthetic datasets. Lower is better.}
-    \label{fig:kldg-synthetic}
-\end{figure}
-
-Lastly, we evaluate the models in terms of Kullback-Leibler Divergence. Here we see a significant difference between the methods. See figure~\ref{fig:kldg-synthetic}The best performing model here is FairBN. With a 5th percentile value of $4.67 \times 10^{-5}$ and mean $0.025$. For the fair random forest classifier this is $0$ and $0.21$ respectively
+After the performance metrics have been calculated and collected. We will visualise the distributions of the performance metrics as well as the correlation between parity score, KL Divergence and AUC score. The results are shown and discussed in section~\ref{eval:exp2}
 
 \section{Interpretable Machine Learning}
 

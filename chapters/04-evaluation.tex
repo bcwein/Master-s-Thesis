@@ -89,6 +89,8 @@ We see  in that there are some categories in the following attributes that are c
 We observe that our identified sensitive attributes are correlated with income. The challenge now is that we have to learn a model that does not treat individuals belonging to different classes in the sensitive attribute unfairly.
 
 \section{Experiment 1: FairBN, FairTreeClassifier vs NB}
+
+
 \label{sec:result:experiment1}
 
 Below we will go through the different results of the first round of experiments. To see the detailed results, these are available in the appendix. See~\ref{app:experiment1}
@@ -138,6 +140,108 @@ For the Compas dataset, things are looking better with the models with $\Theta \
     \label{fig:exp1FRFCROC}
 \end{figure}
 
+\section{Experiment 2: Results}
+\label{eval:exp2}
+
+\subsection{F1 Score}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/F1score-synthethic.png}
+    \caption{F1 Scores of the different models on 100 synthetic datasets. Higher is better.}
+    \label{fig:f1synth}
+\end{figure}
+
+When evaluating the models in terms of F1 Score, we observe that the fair methods have lower but acceptable F1 Scores. For the fair Bayesian network classifier $95\%$ of the F1 scores is at $0.4$ or higher with mean at $0.6$. For the fair random forest classifier, these values are $0.0$ and $0.63$. We see from the plot in figure~\ref{fig:f1synth} that the F1 score of the fair Bayesian network is on average lower than for fair random forest classifier but with lower variance.
+
+\subsection{Specificity}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/Specificity-synthetic.png}
+    \caption{Specificity of the different models on 100 synthetic datasets. Higher is better}
+    \label{fig:specsynth}
+\end{figure}
+
+Since F1 Score is biased with respect to true negatives, we calculate the Specificity of the models as well. The distribution of specificity for the different models are shown in figure~\ref{fig:specsynth}. We observe that the fair methods has a higher variance in their specificity as compared to the naïve Bayesian methods as well as the unfair predictions of the fair Bayesian network. $95\%$ of the specificity values are at $0.3$ or higher with mean at $0.61$. For fair random forest classifier, these values are $0.0$ and $0.44$ respectively.
+
+\subsection{Intersectional parity score}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/intparscore-synthetic.png}
+    \caption{Intersectional Parity Score of the different models on 100 synthetic datasets. Higher is better.}
+    \label{fig:intpar}
+\end{figure}
+
+In terms of intersectional parity score, i.e. average demographic parity across all subgroups of sensitive attributes, we see that the fair Bayesian network is able to consistently have more fair decisions. See figure~\ref{fig:intpar}. The mean parity score for the FairBN classifier is $0.70$ with the 5th percentile at $0.50$. For the fair random forest classifier these values are $0.54$ and $0.0$ respectively.
+ 
+\subsection{AUC Gender}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/aucg-synthetic.png}
+    \caption{AUC w.r.t. Gender of the different models on 100 synthetic datasets. Lower is better.}
+    \label{fig:aucgender}
+\end{figure}
+
+In the paper by \citet{Antonio:2021:arXiv} they propose use AUC w.r.t. gender to evaluate splits which are more fair. Interestingly, while the fair random forest method is based on selecting splits that minimise the AUC w.r.t. gender, the model fares quite similarly to the Naïve Bayes models and LabelBN. See figure~\ref{fig:aucgender} The AUC is even higher than what is inherent in the labels of the dataset itself and predictions are in this sense more discriminatory than what is present in the true labels. The only model to minimise AUC more than the inherent dataset labels is FairBN. FairBN has a mean AUC of $0.56$ and a 5th percentile of $0.51$. While for the fair random forest classifier, these values are $0.72$ and $0.51$ respectively.
+
+\subsection{Kullback-Leibler Divergence}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/kldg-synthetic.png}
+    \caption{Kullback-Leibler Divergence of the different models on 100 synthetic datasets. Lower is better.}
+    \label{fig:kldg-synthetic}
+\end{figure}
+
+Lastly, we evaluate the models in terms of Kullback-Leibler Divergence. Here we see a significant difference between the methods. See figure~\ref{fig:kldg-synthetic}The best performing model here is FairBN. With a 5th percentile value of $4.67 \times 10^{-5}$ and mean $0.025$. For the fair random forest classifier this is $0$ and $0.21$ respectively
+
+\subsection{Correlation between scoring methods}
+
+\subsubsection{Demographic Parity v KL Divergence}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/kldvsdempar-synthethic.png}
+    \caption{Demographic Parity and KL Divergence}
+    \label{fig:kldvsdempar}
+\end{figure}
+
+From figure~\ref{fig:kldvsdempar} we see that demographic parity and KL divergence are inversely related. As the parity score increases the divergence decreases. This gives us further confidence that both measure fairness in terms of demographic parity.
+
+\subsection{AUC and KL Divergence}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figures/aucvskldiv-synthethic.png}
+    \caption{AUC and KL Divergence w.r.t. Gender}
+    \label{fig:aucvskld}
+\end{figure}
+
+From figure~\ref{fig:aucvskld} we see that these scores are also correlated with one another, though not as strongly as with Parity Score and KL Divergence. This gives some validity to the use of AUC to train a fair random forest classifier.
+
+\subsection{Hypothesis Tests}
+
+\begin{table}
+    \centering
+	\begin{tabular}{p{8cm}lll}
+        \hline
+        \textbf{Hypothesis} & $\boldsymbol{p}$ & Reject $\boldsymbol{H_0}$ & $\boldsymbol{T}$ \\
+        \hline
+ 	    \hline
+        FairBN ($Y$) has a better intersectional parity score than naïve Bayes ($X$) without sensitive attributes & $4.13 \times 10^{-18}$ & Yes & $25$ \\ \hline
+        FRFC ($Y$) has a better intersectional parity score than naïve Bayes ($X$) without sensitive attributes & $1.93 \times 10^{-9}$ & Yes & $812$ \\ \hline
+        FairBN ($Y$) has a better intersectional parity score than FRFC ($X$) & $1.41 \times 10^{-6}$ & Yes & $1163$ \\ \hline
+        FairBN ($Y$) has a better KLD w.r.t. Gender than FRFC ($X$) & $2.13 \times 10^{-10}$ & Yes & $4341$ \\ \hline
+    \end{tabular}
+    \caption{Result of hypothesis tests}
+    \label{tab:hypothesisres}
+\end{table}
+
+As we see from the table above, we reject the null-hypothesis in all cases. This implies that both fair machine learning models have more fair predictions than the baseline method of using naïve-Bayes without the sensitive attributes. Additionally, we find that the fair Bayesian network has a more consistent and statistically significantly better score than the fair random forest classifier in terms of both parity score and KL Divergence.
+
 \section{Counterfactuals}
 
 \subsection{naïve Bayes With Sensitive Attributes}
@@ -170,16 +274,6 @@ Got the following counterfactuals:
 177 &  (31.6, 46.2] &    Private &  Assoc-voc &  Married-AF-spouse &  Tech-support &      Unmarried &               Black &  Female &  (16515.0, 37386.0] &   (20.6, 40.2] &  0.419303 &  0.8 &   2 &  0.0 \\
 \bottomrule
 \end{tabular}
-}
-
-
-\instructions{
-Page budget for Evaluation: 10-15 pages
-%
-\begin{itemize}
-    \item Detail your evaluation methodology, present your results, and provide an analysis of them. Results can be quantitative and/or qualitative (from benchmark, user study, user satisfaction survey, etc.).
-    \item It is strongly desired that you have empirical results, nevertheless, this may not be applicable to all types of theses.
-\end{itemize}
 }
 
 \subsection{naïve Bayes Without Sensitive Attributes}
@@ -242,37 +336,3 @@ We get the following counterfactuals
 }
 
 \subsection{Fair Tree Classifier}
-
-
-\section{Experimental Setup}
-\label{sec:eval:expsetup}
-
-\instructions{
-\begin{itemize}
-    \item Explain the methodology used for evaluating your contribution, and the metrics used for evaluation.
-    \item If you use any dataset, explain it, detail its version, and mention briefly some main statistics about it, of interest for your problem (e.g., size, provenience, etc.), if appropriate.
-    \item If you collect ground truth data, describe your annotation experiment. Explain what the annotators were asked to do (and show a screenshot or schema if available). Detail the number of annotators, their nature (experts, or crowdworkers), the criteria for deciding on each annotation instance (e.g., majority class, dynamic judgments, etc.), the criteria for ensuring quality (e.g., minimum accuracy, filters). If possible, report the inter-annotator agreement coefficient and mention how strong this value means that the agreement is.
-\end{itemize}
-}
-
-\section{Experimental Results}
-\label{sec:eval:results}
-
-
-\instructions{
-\begin{itemize}
-    \item Present the results, using tables and (pretty) plots.
-\end{itemize}
-}
-
-\section{Analysis}
-\label{sec:eval:analysis}
-
-\instructions{
-\begin{itemize}
-    \item Now that you presented the results, what do these results actually mean (esp. regarding the objectives you set out in the introduction)? 
-    \item Can you identify success and failure cases? 
-    \item What do the results say for individual parts you evaluate and overall in combination? 
-    \item Make sure you formulate clear take-home messages.
-\end{itemize}
-}
