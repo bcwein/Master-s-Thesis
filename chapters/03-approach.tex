@@ -437,17 +437,27 @@ We ran 100 synthetic dataset generations and trained the models on the synthetic
 
 After the performance metrics have been calculated and collected. We will visualise the distributions of the performance metrics as well as the correlation between parity score, KL Divergence and AUC score. The results are shown and discussed in section~\ref{eval:exp2}
 
-\section{Interpretable Machine Learning}
+\section{Experiment 3: Interpretable Machine Learning}
 
-Some of the models that we have trained are interpretable. These are the naïve Bayesian models and the Fair Bayesian Network. While we have implemented a fair random forest method, this is not immediately interpretable. Therefore, we will train decision trees on the data using ScikitLearn to see the decision behind the predictions as well as the importance of features. Additionally, an effort on trying to extract the feature importance in the random forests model.
+We have been able to show that the models we have trained are able to satisfy some mathematical notion of fairness in their predictions. But we want to investigate this further. By employing interpretable machine learning methods, we can try to explain how the model uses the sensitive attributes in their predictions and try to explain their behaviour. 
+
+\subsection{Experiment Design}
+
+For this experiment, we want to implement the following in an attempt to explain the decisions made by machine learning models
+
+\begin{itemize}
+    \item Train a baseline interpretable model and investigate the decision rules it learns.
+    \item Interpret the models that are interpretable by default.
+    \item Use model agnostic interpretable methods for models that are not interpretable.
+\end{itemize}
+
+In the following sections, we will describe the methods chosen to answer the above points.
 
 \subsection{Interpreting Decision Trees}
 
-According to \citet{Molnar:2020:Book} the interpretation of decision trees, while quite similar for all algorithms, differ by the kind og algorithm for building the tree is used. The interpretation described here is for the CART algorithm which is the one implemented by ScikitLearn \cite{Pedregosa:2011:JMLR}.
+To address the first point, we want to train a baseline interpretable model. Our choice landed on Decision Trees. According to \citet{Molnar:2020:Book} the interpretation of decision trees, while quite similar for all algorithms, differ by the kind of algorithm for building the tree is used. The interpretation described here is for the CART algorithm, which is the one implemented by Scikit-learn \cite{Pedregosa:2011:JMLR}.
 
-The interpretation of decision trees works as follows: Starting from the root node, you go to the next nodes and the edges tell you which subsets you are looking at. Once you reach the leaf node, the node tells you the predicted outcome. \cite{Molnar:2020:Book}
-
-To calculate the feature importance. We calculate the reduction in the split. In our case, we have used entropy and information gain to evaluate splits which is defined as 
+The interpretation of decision trees works as follows: Starting from the root node, you go to the next nodes and the edges tell you which subsets you are looking at. Once you reach the leaf node, the node tells you the predicted outcome. \cite{Molnar:2020:Book} To calculate the feature importance. We calculate the reduction in the split. In our case, we have used entropy and information gain to evaluate splits which is defined as 
 
 \begin{equation*}
     IG(T) = H(T) - \sum_{i = 1}^{2} \frac{n_i}{n} H(C_i)
@@ -456,10 +466,6 @@ To calculate the feature importance. We calculate the reduction in the split. In
 Where $T$ is the node being split and $C_i$ is child node $i$. $H$ denotes shannon entropy introduced by \citet{Shannon:1948:BellSystTechJ}. Go through all the splits for which the feature was used and measure how much it has reduced the information gain. Scale all the sums to $1$, then you can calculate the share of a features importance as an percentage.
 
 We will do this for the datasets that have been used in the previous experiments to uncover what attributes are used in the model prediction.
-
-\subsection{Interpreting Fair Random Forest}
-
-
 
 \subsection{Interpreting naïve Bayes}
 
@@ -488,7 +494,7 @@ Then we denote the first column $P = P(X_i | Y = 0)$ and the second column $Q = 
     D_{KL}(P||Q)
 \end{equation*}
 
-This should also be validated using permutation importance to compare the weights. Introduced by \citet[p.23-25]{Breiman:2021:MachLearn}. The algorithms used is shown below and is based on the one used by ScikitLearn \cite{Pedregosa:2011:JMLR}
+This should also be validated using permutation importance to compare the weights. Introduced by \ref{alg:permimp} is used and is based on the one used by Scikit-learn \cite{Pedregosa:2011:JMLR}
 
 \begin{algorithm}
     \caption{Permutation Importance Algorithm}
@@ -505,9 +511,72 @@ This should also be validated using permutation importance to compare the weight
         \ENDFOR
         \RETURN $I$ 
     \end{algorithmic}
+    \label{alg:permimp}
 \end{algorithm}
 
-This algorithm returns a dataset of importances as we want to see the distribution of importances for each feature.
+This algorithm returns a dataset of importances, as we want to see the distribution of importances for each feature.
 
 \subsection{Interpreting Bayesian Networks}
 
+Bayesian Networks are to some extent interpretable machine learning models, dependent on the complexity of the conditional dependencies. Naïve Bayes is an interpretable machine learning model and is the simplest Bayesian network. It is very intuitive for humans to explain how much each attribute contributes, as they are conditionally independent given the class label. As the complexity of the conditional dependencies increase,  they are more demanding to understand.
+
+In our case, from the fair Bayesian network as shown in figure \ref{fig:choinetwork}. We see that the sensitive attributes are independent of the true latent dataset labels. Meaning that the sensitive attributes should not be used explicitly in the prediction. To investigate this, we want to use the permutation importance algorithm to see how important the features are for getting accurate predictions. We will also apply counterfactual generation described in section~\ref{sec:counterfactuals} on the fair Bayesian network for further interpretability.
+
+\subsection{Interpreting Fair Random Forest}
+
+Random Forests are not interpretable as the many different trees used for predictions are not immediately intuitive to explain, and in many cases so many that the interpretation is incomprehensible in human terms. Therefore, one has to resort to model agnostic interpretability methods if one wants to gain some insight. We have chosen to use feature importance here as well in an effort to understand the model.
+
+There is one challenge with the approach by \citet{Antonio:2021:arXiv}, and that is the fact that the sensitive attributes are only used during training of the model. Meaning that one cannot infer how the model uses the sensitive attributes neither using the permutation importance method nor counterfactual generation. We will resort to investigate how the model uses the non-sensitive attributes in their prediction to investigate how the model achieves fairness.
+
+\subsection{Counterfactuals}
+\label{sec:counterfactuals}
+
+According to \citet{Molnar:2020:Book}, a counterfactual explanation should describe the smallest change to the feature values that changes the prediction to a predefined output. In our case for the Adult and the Compas dataset, we want to generate the smallest changes to get a positive outcome (being classified as high income or not likely to reoffend). Counterfactuals should follow these criteria
+
+\begin{itemize}
+    \item Counterfactuals should be as similar as possible to the instance regarding feature values.
+    \item Counterfactual instances should have feature values that are likely.
+    \item Change as few features as possible.
+\end{itemize}
+
+Various methods exist for generating counterfactuals, while we will get inspiration from the method proposed by \citet{Dandl:2020:PPSN}, specifically the NSGA-II algorithm introduced by \citet{Pratap:2002:IEEE.Trans.Evol.Comput.}. We want to generate counterfactuals that satisfy the following objectives 
+
+\begin{equation*}
+    o_1(\hat{f}(\boldsymbol{x}), Y') = 
+    \begin{cases}
+        0 & \text{if} \hat{f}(\boldsymbol{x}) \in Y' \\
+        \underset{y' \in Y'}{\text{inf}} |\hat{f}(\boldsymbol{x}) - y'0|, & \text{else} \\
+    \end{cases}
+\end{equation*}
+
+Which is the distance between the desired prediction $y'$ and the predicted value $\hat{f}(\boldsymbol{x})$.  The second objetive $o_2$ reflect that counterfactuals should be as equal to the instance $\boldsymbol{x}$ that we want to flip the prediction for
+
+\begin{equation*}
+    o_2(\boldsymbol{x}, \boldsymbol{x'}) = \frac{1}{p} \sum_{j=1}^{p} \mathbb{I}_{x_j \neq x'_j}
+ \end{equation*}
+
+Which uses the indicator function,  as the models implemented in pgmpy uses categorical data. Numerical values are also categorical as they are discretised. Next, we introduce $o_3$ which measures the amount of features that have been changes.
+
+\begin{equation*}
+    o_3(\boldsymbol{x}, \boldsymbol{x'}) = ||\boldsymbol{x} - \boldsymbol{x'}||_0 = \sum_{j=1}^{p} \mathbb{I}_{x_j \neq x'_j}
+\end{equation*}
+
+Lastly, we want the counterfactual to have attributes that are likely to occur. We measure this by searching for the closest sample in the training dataset and calculate the distance between the candidate and the closest point.
+
+\begin{equation*}
+    o_4(x', X^\text{obs}) = \frac{1}{p} \sum_{j=1}^{p} \mathbb{I}_{x_j \neq x^{[1]}_j}
+\end{equation*}
+
+And we try to minimise all these objective functions at once. To do this we will have to resort to a genetic algorithm as we do not want to collapse the four objectives into one but optimise all at the sime time.
+
+\subsection{Nondominated Genetic Sorting Genetic Algorithm: NSGA-II}
+
+The NSGA-II algorithm introduce by \citet{Pratap:2002:IEEE.Trans.Evol.Comput.} works as a four step iterative algorithm. The steps are as follows:
+
+Initially, we generate a parent population that consists of $N$ number of mutated copies of $\boldsymbol{x}$, the datapoint we want to change the outcome for. The mutations in the beginning are quite extensive so that we explore the optimisation space thoroughly. Then, we use fast-non-dominated-sort algorithm \cite[p.~184]{Pratap:2002:IEEE.Trans.Evol.Comput.} to rank the population into frontiers. 
+
+Then, we add each frontier in decreasing order into the new population $P_\text{new}$ until there is no room to add the next frontier. Then we apply the crowding-distance-assignment method to add the remaining number of slots from the last frontier into $P_\text{new}$ \cite[p.~185]{Pratap:2002:IEEE.Trans.Evol.Comput.}
+
+We then have a new population $P = P_{\text{new}}$ and we create a new generation $R$ which consists of mutated samples from $P$. We then rank $R \cup P$ using nondominated sorting and reiterate the steps above until the specified amount of iterations is completed.
+
+The code for NSGA-II is added to the classes \emph{interpretableNaiveBayes} and \emph{latentLabelClassifier} as a method in Forseti.

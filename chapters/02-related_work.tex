@@ -167,7 +167,7 @@ Graphical models give us a graphical way to represent the joint PDF. It models t
 \end{equation*}
 
 \subsection{Naïve Bayes Classifier: Baseline Method}
-\label{relatedwork:naïveBayes}
+\label{relatedwork:naiveBayes}
 The naïve Bayes classifier is the simplest Bayesian network, assuming that all features are independent conditionally on the class variable, hence the name naïve Bayes. This naïve assumption gives the model few parameters to learn, and it requires little training data to achieve good performance. From the work by \citet{Zhang:2004:AAAI} we know that naïve Bayes classifiers perform well despite the assumption of independence among features due to the dependencies cancelling each other out and dependencies distributing evenly among classes.
 
 According to \citet[p.~217]{Ankan:2015:Book}, assume that we have a dataset $X = (x_1, x_2, \dots, x_N)$ with $N$ independent features and $k$ classes $C_k$ that we want to classify the data to. naïve Bayes does this by modelling the posterior distribution in terms of the joint probability

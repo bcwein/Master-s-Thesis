@@ -242,9 +242,111 @@ From figure~\ref{fig:aucvskld} we see that these scores are also correlated with
 
 As we see from the table above, we reject the null-hypothesis in all cases. This implies that both fair machine learning models have more fair predictions than the baseline method of using naïve-Bayes without the sensitive attributes. Additionally, we find that the fair Bayesian network has a more consistent and statistically significantly better score than the fair random forest classifier in terms of both parity score and KL Divergence.
 
-\section{Counterfactuals}
+\section{Experiment 3: Results}
 
-\subsection{naïve Bayes With Sensitive Attributes}
+\subsection{Decision Tree: Adult Dataset}
+
+To gain insight into how the decision tree uses the attributes in its decisions, we calculate the feature importance of all attributes and show the ones that have positive feature importance. Feature importance is calculated as the normalised amount of reduction in entropy brought on by that attribute in the model. After training the decision tree classifier in Scikit-learn on the adult dataset. We got the following feature importance shown in table~\ref{tab:dectreeadultimp}.
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{lr}
+    \toprule
+    Attribute &  Importance \\
+    \midrule
+    marital-status\_Married-civ-spouse &    0.529924 \\
+    capital-gain &    0.347748 \\
+    education\_Bachelors &    0.041893 \\
+    hours-per-week &    0.040666 \\
+    age &    0.038778 \\
+    education\_Preschool &    0.000992 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Decision Tree: Adult Dataset - Feature Importance}
+    \label{tab:dectreeadultimp}
+\end{table}
+
+On the adult dataset we see that the decision rules considers whether or not someone has a civilian spouse as the most important variable to consider when classifying someone as high income or not. No sensitive attributes are considered important and when investigating the tree structure, no nodes employ the sensitive attributes.
+
+\subsection{Decision Tree: Compas Dataset}
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{llr}
+    \toprule
+    {} &          Attribute &  Importance \\
+    \midrule
+    0 &       priors\_count &    0.524409 \\
+    1 &                age &    0.417728 \\
+    2 &           sex\_Male &    0.030951 \\
+    3 &     juv\_misd\_count &    0.011672 \\
+    4 &  c\_charge\_degree\_M &    0.006723 \\
+    5 &         race\_Other &    0.005893 \\
+    6 &      juv\_fel\_count &    0.002624 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Decision Tree: Compas Dataset - Feature Importance}
+    \label{tab:detreecompasimp}
+\end{table}
+
+On the other hand, when training the decision tree classifier on the compas dataset, we see that whether someone is male or considered to belong in the \emph{Other} race category is used in prediction. This implies that there is a significant gender and racial bias in the data.
+
+\subsection{Naive Bayes: Feature Importance}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\linewidth]{figures/KLDimportance-adult.png}
+    \includegraphics[width=0.49\linewidth]{figures/permimportance-adult.png}
+    \caption{KLD and Permutation weights of naïve Bayes with and without sensitive attributes. Adult Dataset.}
+    \label{fig:kldpermimpadult}
+\end{figure}
+
+To interpret the naïve Bayes models we look at the conditional distributions for the different attributes and compare calculate the KLD between the distribution $P = p(X|Y=0)$ and $Q = p(X|Y=1)$. We also calculate the permutation feature importance by calculating the loss in accuracy by permuting a specific column. The resulting weights are shown in figure~\ref{fig:kldpermimpadult} for the adult datasetn and figure~\ref{fig:kldpermimpcompas}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\linewidth]{figures/KLDimportance-compas.png}
+    \includegraphics[width=0.49\linewidth]{figures/permimportance-compas.png}
+    \caption{KLD and Permutation weights of naïve Bayes with and without sensitive attributes. Compas Dataset.}
+    \label{fig:kldpermimpcompas}
+\end{figure}
+
+\subsection{Fair Tree Classifier: Feature Importance}
+
+\begin{figure}
+    \centering
+    \includegraphics{figures/frfc-permimportance-adult.png}
+    \includegraphics[width=\linewidth]{figures/fairbn-permimportance-adult.png}
+    \caption{Caption}
+    \label{fig:my_label}
+\end{figure}
+
+We also calculate the feature importance of the fair tree classifier. We see a similar relationship in the feature weights as in Naive Bayes but age and work class is completely neglected. Also, as $\Theta$ increases, overall weight of the attributes decreases. 
+
+\subsection{Individual Conditional Expectation}
+
+We have implemented ICE calculations for the classifiers Naive Bayes and Fair Tree Classifiers. As the sensitive attributes are not numerical but categorical, we do not resort to line plots of the predicted probability but rather categorical plots. Therefore, the distribution of predicted probability given the certain values is shown for the different models and datasets. Figure~\ref{fig:ICEdistgenderadult} shows how gender is treated by the different models in the Adult and Compas dataset. Figure~\ref{fig:ICEdistrace} show how race is treated by the different models.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\linewidth]{figures/ICEdistgender-adult.png}
+    \includegraphics[width=0.49\linewidth]{figures/ICEdistgender-compas.png}
+    \caption{ICE distribution for Gender in the different datasets.}
+    \label{fig:ICEdistgender}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.49\linewidth]{figures/ICEdistrace-adult.png}
+    \includegraphics[width=0.49\linewidth]{figures/ICEdistrace-compas.png}
+    \caption{ICE distribution for Race in the different datasets}
+    \label{fig:ICEdistrace}
+\end{figure}
+
+
+\subsection{Counterfactuals}
+
+\subsubsection{naïve Bayes With Sensitive Attributes}
 
 For the following datapoint:
 
@@ -276,7 +378,7 @@ Got the following counterfactuals:
 \end{tabular}
 }
 
-\subsection{naïve Bayes Without Sensitive Attributes}
+\subsubsection{naïve Bayes Without Sensitive Attributes}
 
 For the following datapoint:
 
@@ -305,7 +407,7 @@ We get the following counterfactuals:
 \end{tabular}
 }
 
-\subsection{Fair Bayesian Network}
+\subsubsection{Fair Bayesian Network}
 
 For the following counterfactual
 
@@ -334,5 +436,3 @@ We get the following counterfactuals
 172 &  (16.927, 31.6] &      Never-worked &        11th &      Separated &                ? &      Unmarried &               White &  Female &  (58257.0, 79128.0] &   (20.6, 40.2] &  0.000000e+00 &  0.6 &   4 &  0.1 \\
 \end{tabular}
 }
-
-\subsection{Fair Tree Classifier}
