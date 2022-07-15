@@ -2,7 +2,7 @@
 \label{ch:approach}
 
 \section{Overall Approach}
-To answer the three research questions mentioned in section~\ref{sec:intro:objectives} we want to compare some models find in literature. Mainly the fair Bayesian network and the fair tree classifiers. These should be evaluated on datasets used in machine learning research. We then will perform experiments evaluating the performance metrics of the models, as well as new performance metrics reflecting fairness. When we have enough data on the performance of the models, hypothesis testing will be done to evaluate whether the differences are significant.
+To answer the three RQs mentioned in section~\ref{sec:intro:objectives} we want to compare some models find in literature. Mainly the fair Bayesian network and the fair tree classifiers. These should be evaluated on datasets used in machine learning research. We then will perform experiments evaluating the performance metrics of the models, as well as new performance metrics reflecting fairness. After collecting the data on the performance of the models, hypothesis testing will be done to evaluate whether the differences are significant.
 
 \section{Python Code Repository: Forseti}
 
@@ -27,18 +27,18 @@ The code and its documentation is available at GitHub\footnote{\url{https://gith
 
 \subsection{Setup}
 
-The environment used in forseti is available in the file \emph{environment.yml} and one can setup the environment using Anaconda. See the documentation \footnote{\url{https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html\#creating-an-environment-from-an-environment-yml-file}} on how to do this.
+The environment used in Forseti is available in the file \emph{environment.yml} and one can setup the environment using Anaconda. See the documentation \footnote{\url{https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html\#creating-an-environment-from-an-environment-yml-file}} on how to do this.
 
 If one prefers to not use anaconda, the necessary packages are as follows:
 
 \begin{itemize}
     \item Python
     \item Pytest
-    \item black
-    \item jupyter
+    \item Black
+    \item Jupyter
     \item ipykernel
-    \item pandas
-    \item seaborn
+    \item Pandas
+    \item Seaborn
     \item pip
     \item pgmpy
 \end{itemize}
@@ -49,10 +49,10 @@ For this thesis, exploration of approaches to achieve fairness and interpretabil
 
 \subsection{Adult Dataset}
 
-To select the features of interest and as an initial data exploration. We will investigate the correlation between the features and the dependent variable \emph{income}. Since almost all the attributes are categorical, we calculate correlation using dummy variables. Which means, transforming categorical attributes to columns of binary attributes. We then explore which dummy variables that have the highest absolute correlations. We interpret the weight of each variable as the absolute sum of its dummies. 
+To select the features of interest and as an initial data exploration. We will investigate the correlation between the features and the dependent variable \emph{income}. Since almost all the attributes are categorical, we calculate correlation using dummy variables. Which means, transforming categorical attributes to columns of binary attributes. We then explore which dummy variables have the highest absolute correlations. We interpret the weight of each variable as the absolute sum of its dummies. 
 
-\subsection{Compas Dataset}
-The Compas dataset contains records for defendants from Broward County indicating their jail and prison times, demographics, criminal histories and Compas risk scores from 2013 to 2014 \cite{Mehrabi:2021:CSUR}. This dataset is high dimensional with a mix of categorical, numerical and date time columns. For this thesis, the focus has not been to implement the best model out there, but rather compare the fairness between models. Therefore, we have limited ourselves to the following attributes when training our algorithms
+\subsection{COMPAS Dataset}
+The COMPAS dataset contains records for defendants from Broward County indicating their jail and prison times, demographics, criminal histories and COMPAS risk scores from 2013 to 2014 \cite{Mehrabi:2021:CSUR}. This dataset is high dimensional with a mix of categorical, numerical and date time columns. For this thesis, the focus has not been to implement the best model out there, but rather compare the fairness between models. Therefore, we have limited ourselves to the following attributes when training our algorithms
 
 \begin{itemize}
     \item Sex: Gender of individual (binary)
@@ -79,7 +79,7 @@ Using demographic parity as described in equation~\ref{eq:dempar} is the metric 
     \label{fig:overlap}
 \end{figure}
 
-A challenge when working with multiple sensitive attributes and multivariate sensitive attributes is that you get overlapping groups. See figure~\ref{fig:overlap} for an example. There we see that we have the binary attribute \emph{Gender} and the categorical \emph{Race} we have several subgroups, i.e., Black Women, White Male etc. An algorithm can be \emph{independently group fair} when you calculate fairness for each sensitive attribute independently, and/or \emph{intersectional group fair} when you calculate fairness for all subgroups. \cite{Yang:2020:CoRR}. In this thesis, we use both approaches to calculate parity. 
+A challenge when working with multiple sensitive attributes and multivariate sensitive attributes is that you get overlapping groups. See figure~\ref{fig:overlap} for an example. There we see that we have the binary attribute \emph{Gender} and the categorical \emph{Race} we have several subgroups, i.e., Black Women, White Male etc. An algorithm can be \emph{independently group fair} when you calculate fairness for each sensitive attribute independently, and/or \emph{intersectional group fair} when you calculate fairness for all subgroups \cite{Yang:2020:CoRR}. In this thesis, we use both approaches to calculate parity. 
 
 \subsection{Scoring Function: Demographic Parity Score}
 \label{sec:demparscore}
@@ -206,13 +206,13 @@ Inference has been performed by evaluating $P(F | A, E, R_e, C, M, W, H, O)$ on 
 \section{Fair Tree Classifier}
 The fair tree classifier, described in detail in section~\ref{sec:fairtree}. \citet{Antonio:2021:arXiv} kindly provided their code on GitHub, which made implementing this over to Forseti a bit easier. The code is available in their repository\footnote{\url{https://bit.ly/3x937Nr}}. We added their decision tree classifier and fair random forest classifier classes to Forseti and train and test the models on the same datasets as the fair tree classifier.
 
-\section{Experiment 1: Test Models on Compas and Adult Dataset}
-
-After implementing the Fair Bayesian Network and the Fair Tree Classifier. We wanted to evaluate the models on the Adult Dataset and Compas Dataset. To evaluate the models we had to choose some performance metrics. A combination of traditional performance metrics and a fairness score was desired. The fairness score used is the one described in section~\ref{sec:demparscore}. For the traditional metrics there were several pros and cons for each of them. We will go through each one of them and explain the motivation for using that particular scoring method.
+\section{Experiment 1: Test Models on COMPAS and Adult Dataset}
+\label{sec:AdultAdultFairnessAssessment}
+After implementing the Fair Bayesian Network and the Fair Tree Classifier. We wanted to evaluate the models on the Adult Dataset and COMPAS Dataset. To evaluate the models we had to choose some performance metrics. A combination of traditional performance metrics and a fairness score was desired. The fairness score used is the one described in section~\ref{sec:demparscore}. For the traditional metrics there were several pros and cons for each of them. We will go through each one of them and explain the motivation for using that particular scoring method.
 
 \subsection{Accuracy}
 
-We use the accuracy score as implemented in Scikit Learn. Which follows the following formula
+We use the accuracy score as implemented in Scikit-Learn. Which follows the following formula
 
 \begin{equation*}
     A(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples} - 1} 1(\hat{y}_i = y_i)
@@ -282,12 +282,12 @@ The two models that have been implemented in the first round of experiments, nam
 
 \subsection{Experiment Design}
 
-There are some question that have arisen from the first round of experiments and some improvements that we wanted to implement. These are
+There are some questions that have arisen from the first round of experiments and some improvements that we wanted to implement. These are
 
 \begin{enumerate}
     \item Does demographic parity score capture fairness? \label{ex2:parityscore}
     \item What other measures of fairness can we introduce that are more well established? \label{ex2:fairnessmeasure}
-    \item How does the different performance metrics used by the different authors compare?
+    \item How do the different performance metrics used by the different authors compare?
     \item Collect enough samples to perform hypothesis testing.
 \end{enumerate}
 
@@ -351,7 +351,7 @@ And the same for $X_2$. The same principle is used for $X_3$ and $X_4$ but with 
     \end{aligned}
 \end{equation*}
 
-and the same for $X_4$. Then lastly, to calculate the labels of the dataset we take the sum of all the numerical features $X = \{ X_1, X_2, X_3, X_4 \}$ and calculate the median of all the sums for each data point. If the sum is above the median, it gets labeled 1, otherwise, 0.
+and the same for $X_4$. Then lastly, to calculate the labels of the dataset we take the sum of all the numerical features $X = \{ X_1, X_2, X_3, X_4 \}$ and calculate the median of all the sums for each data point. If the sum is above the median, it gets labelled 1, otherwise, 0.
 
 This can be summarised in algorithm~\ref{alg:datasetgen}
 
@@ -375,7 +375,7 @@ This can be summarised in algorithm~\ref{alg:datasetgen}
         \STATE Select $R$ uniformly from the set $\{ -1, 1\}$
         \STATE Sample $N_i$ samples from $X_4 | R_s = i \sim N(1 + \Theta \cdot R \cdot i, 1)$
         \ENDFOR
-        \STATE $t = \sum X$ for all datapoints in the dataset
+        \STATE $t = \sum X$ for all data points in the dataset
         \IF{$t \geq \text{Median}(X)$}
         \STATE $Y = 1$
         \ELSE
@@ -389,7 +389,7 @@ This can be summarised in algorithm~\ref{alg:datasetgen}
 
 \subsection{Fairness Performance Measure}
 
-The performance metric used for the models up to this points is the parity score metric as described in Section.~\ref{sec:demparscore}. This score is based on the notion that the likelihood of positive outcome is independent of the sensitive attributes. There is another measure that is similar to this. That is Kullback-Leibler divergence. Which according to \citet{Mackay:2003:information} is calculated as 
+The performance metric used for the models up to this point is the parity score metric as described in section.~\ref{sec:demparscore}. This score is based on the notion that the likelihood of positive outcome is independent of the sensitive attributes. There is another measure that is similar to this. That is Kullback-Leibler divergence. Which according to \citet{Mackay:2003:information} is calculated as 
 
 \begin{equation*}
     D_KL(P ||Q) = \sum_x \log\frac{P(x)}{Q(x)}
@@ -407,7 +407,7 @@ and
     Q \sim Y | S = 1
 \end{equation*}
 
-Under demographic parity, we want $Q \perp\!\!\!\perp P , S$ and thus a Kullback-Leibler Divergence of 0. Kullback-Leibler Divergence is limited to two distributions though there are generalisations. For this round of experiments we limit ourselves to the binary case and calculate the divergence in the binary cases and compare them to the other metrics.
+Under demographic parity, we want $Q \perp\!\!\!\perp P , S$ and thus a Kullback-Leibler Divergence of 0. Kullback-Leibler Divergence is limited to two distributions, though there are generalisations. For this round of experiments, we limit ourselves to the binary case and calculate the divergence in the binary cases and compare them to the other metrics.
 
 \subsection{Hypothesis Tests}
 
@@ -433,7 +433,7 @@ We have chosen to use non-parametric hypothesis tests, as we do not want to make
 
 \subsection{Experiment Setup}
 
-We ran 100 synthetic dataset generations and trained the models on the synthetic datasets and evaluate them on a test dataset. For each iteration the train-test split is $70\%$ for the training set and $30\%$ for the test dataset. We calculated the same performance metrics as in the first experiment. Additionally, we also introduce Kullback-Leibler Divergence w.r.t. Gender. 
+We ran 100 synthetic dataset generations and trained the models on the synthetic datasets and evaluated them on a test dataset. For each iteration the train-test split is $70\%$ for the training set and $30\%$ for the test dataset. We calculated the same performance metrics as in the first experiment. Additionally, we also introduce Kullback-Leibler Divergence w.r.t. Gender. 
 
 After the performance metrics have been calculated and collected. We will visualise the distributions of the performance metrics as well as the correlation between parity score, KL Divergence and AUC score. The results are shown and discussed in section~\ref{eval:exp2}
 
@@ -457,19 +457,19 @@ In the following sections, we will describe the methods chosen to answer the abo
 
 To address the first point, we want to train a baseline interpretable model. Our choice landed on Decision Trees. According to \citet{Molnar:2020:Book} the interpretation of decision trees, while quite similar for all algorithms, differ by the kind of algorithm for building the tree is used. The interpretation described here is for the CART algorithm, which is the one implemented by Scikit-learn \cite{Pedregosa:2011:JMLR}.
 
-The interpretation of decision trees works as follows: Starting from the root node, you go to the next nodes and the edges tell you which subsets you are looking at. Once you reach the leaf node, the node tells you the predicted outcome. \cite{Molnar:2020:Book} To calculate the feature importance. We calculate the reduction in the split. In our case, we have used entropy and information gain to evaluate splits which is defined as 
+The interpretation of decision trees works as follows: Starting from the root node, you go to the next nodes and the edges tell you which subsets you are looking at. Once you reach the leaf node, the node tells you the predicted outcome \cite{Molnar:2020:Book}. To calculate the feature importance. We calculate the reduction in the split. In our case, we have used entropy and information gain to evaluate splits which is defined as 
 
 \begin{equation*}
     IG(T) = H(T) - \sum_{i = 1}^{2} \frac{n_i}{n} H(C_i)
 \end{equation*}
 
-Where $T$ is the node being split and $C_i$ is child node $i$. $H$ denotes shannon entropy introduced by \citet{Shannon:1948:BellSystTechJ}. Go through all the splits for which the feature was used and measure how much it has reduced the information gain. Scale all the sums to $1$, then you can calculate the share of a features importance as an percentage.
+Where $T$ is the node being split and $C_i$ is child node $i$. $H$ denotes Shannon entropy introduced by \citet{Shannon:1948:BellSystTechJ}. Go through all the splits for which the feature was used and measure how much it has reduced the information gain. Scale all the sums to $1$, then you can calculate the share of a features importance as an percentage.
 
 We will do this for the datasets that have been used in the previous experiments to uncover what attributes are used in the model prediction.
 
 \subsection{Interpreting naïve Bayes}
 
-As described in section~\ref{relatedwork:naïvebayes}, the naïve Bayes classifier assumes that all features are mutually independent, conditioned on the class labels. We can therefore interpret the contributions of the different attributes through the conditional probabilities that the naïve Bayes classifier has learned \cite[p.~142]{Molnar:2020:Book}.
+As described in section~\ref{relatedwork:naiveBayes}, the naïve Bayes classifier assumes that all features are mutually independent, conditioned on the class labels. We can therefore interpret the contributions of the different attributes through the conditional probabilities that the naïve Bayes classifier has learned \cite[p.~142]{Molnar:2020:Book}.
 
 The way we have chosen to do this is like so: Assume that a feature $X_i$ in a dataset $\boldsymbol{X}$ is informative. Then we would expect that the likelihood on $X_i$ is very different given the class $Y$
 
@@ -526,12 +526,12 @@ In our case, from the fair Bayesian network as shown in figure \ref{fig:choinetw
 
 Random Forests are not interpretable as the many different trees used for predictions are not immediately intuitive to explain, and in many cases so many that the interpretation is incomprehensible in human terms. Therefore, one has to resort to model agnostic interpretability methods if one wants to gain some insight. We have chosen to use feature importance here as well in an effort to understand the model.
 
-There is one challenge with the approach by \citet{Antonio:2021:arXiv}, and that is the fact that the sensitive attributes are only used during training of the model. Meaning that one cannot infer how the model uses the sensitive attributes neither using the permutation importance method nor counterfactual generation. We will resort to investigate how the model uses the non-sensitive attributes in their prediction to investigate how the model achieves fairness.
+There is one challenge with the approach by \citet{Antonio:2021:arXiv}, and that is the fact that the sensitive attributes are only used during training of the model. Meaning that one cannot infer how the model uses the sensitive attributes neither using the permutation importance method nor counterfactual generation. We will resort to investigating how the model uses the non-sensitive attributes in their prediction to investigate how the model achieves fairness.
 
 \subsection{Counterfactuals}
 \label{sec:counterfactuals}
 
-According to \citet{Molnar:2020:Book}, a counterfactual explanation should describe the smallest change to the feature values that changes the prediction to a predefined output. In our case for the Adult and the Compas dataset, we want to generate the smallest changes to get a positive outcome (being classified as high income or not likely to reoffend). Counterfactuals should follow these criteria
+According to \citet{Molnar:2020:Book}, a counterfactual explanation should describe the smallest change to the feature values that changes the prediction to a predefined output. In our case for the Adult and the COMPAS dataset, we want to generate the smallest changes to get a positive outcome (being classified as high income or not likely to reoffend). Counterfactuals should follow these criteria
 
 \begin{itemize}
     \item Counterfactuals should be as similar as possible to the instance regarding feature values.
@@ -567,13 +567,13 @@ Lastly, we want the counterfactual to have attributes that are likely to occur. 
     o_4(x', X^\text{obs}) = \frac{1}{p} \sum_{j=1}^{p} \mathbb{I}_{x_j \neq x^{[1]}_j}
 \end{equation*}
 
-And we try to minimise all these objective functions at once. To do this we will have to resort to a genetic algorithm as we do not want to collapse the four objectives into one but optimise all at the sime time.
+And we try to minimise all these objective functions at once. To do this we will have to resort to a genetic algorithm as we do not want to collapse the four objectives into one but optimise all at the same time.
 
-\subsection{Nondominated Genetic Sorting Genetic Algorithm: NSGA-II}
+\subsection{Nondominated Sorting Genetic Algorithm: NSGA-II}
 
 The NSGA-II algorithm introduce by \citet{Pratap:2002:IEEE.Trans.Evol.Comput.} works as a four step iterative algorithm. The steps are as follows:
 
-Initially, we generate a parent population that consists of $N$ number of mutated copies of $\boldsymbol{x}$, the datapoint we want to change the outcome for. The mutations in the beginning are quite extensive so that we explore the optimisation space thoroughly. Then, we use fast-non-dominated-sort algorithm \cite[p.~184]{Pratap:2002:IEEE.Trans.Evol.Comput.} to rank the population into frontiers. 
+Initially, we generate a parent population that consists of $N$ number of mutated copies of $\boldsymbol{x}$, the data point we want to change the outcome for. The mutations in the beginning are quite extensive so that we explore the optimisation space thoroughly. Then, we use fast-non-dominated-sort algorithm \cite[p.~184]{Pratap:2002:IEEE.Trans.Evol.Comput.} to rank the population into frontiers. 
 
 Then, we add each frontier in decreasing order into the new population $P_\text{new}$ until there is no room to add the next frontier. Then we apply the crowding-distance-assignment method to add the remaining number of slots from the last frontier into $P_\text{new}$ \cite[p.~185]{Pratap:2002:IEEE.Trans.Evol.Comput.}
 

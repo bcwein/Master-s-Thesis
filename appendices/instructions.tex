@@ -1,12 +1,52 @@
 \chapter{Instructions to Compile and Run System}
 \label{apx:instructions}
 
-\instructions{
-This appendix may contain following:
-%
+\section{Installation Instructions}
+
+The code used in this thesis is organised in Jupyter notebooks and it is programmed using python. A range of libraries is used and these are managed using Anaconda\footnote{https://www.anaconda.com/}. To make it as easy as possible to recreate the environment, we suggest that Anaconda is installed so the environment can be recreated easily. Installing anaconda is explained in detail in the documentation\footnote{https://docs.anaconda.com/anaconda/install/}.
+
+\subsection{The Python Environment}
+
+It is not mandatory to install anaconda to run the code. The libraries that are necessary are as follows:
+
 \begin{itemize}
-    \item Installation instructions
-    \item Source code / class structure
-    \item More detailed evaluation results
+    \item Python
+    \item Pytest
+    \item Flake8 (Used for linting)
+    \item Black (Used for linting and formatting)
+    \item jupyter
+    \item ipykernel
+    \item pandas
+    \item seaborn
+    \item pip
+    \item installed using pip: pgmpy
 \end{itemize}
-}
+
+As long as these libraries are installed the code should work. 
+
+\subsection{Setting up the environment using Anaconda}
+
+After installing Anaconda. The environment is set up as follows. 
+
+\begin{enumerate}
+    \item Navigate to the root folder of the code repository. There you should find a file named \emph{environment.yml}.
+    \item Run the command: \emph{conda env create -f environment.yml}
+    \item When the previous command is complete. Run \emph{conda acitvate forseti} to activate the environment.
+\end{enumerate}
+
+Now the environment is active and running and ready to execute the code.
+
+\subsection{Notebooks}
+
+We will go through each of the notebooks and their purpose so you know which notebook to use if you want to reproduce results.
+
+\begin{itemize}
+    \item Bayesian-net-adult: Notebook used to train the fair bayesian network and naive bayes classifiers as well as saving predictions on the adult dataset.
+    \item Counterfactuals: Runs the \emph{generateCounterfactuals} method on the trained naive bayes and fair bayesian networks and export the results to latex
+    \item data\_exploration: Early notebook for exploring the adult dataset. Calculate correlation for dummy variables and plot the results.
+    \item experiment2-visualisation: Generates a synthetic dataset, traind models on the synthetic dataset and visualises their scores.
+    \item fairtree: Training the fair tree classifier on the adult dataset and COMPAS dataset and store its predictions.
+    \item Interpretability: Training of simple interpretable models, and calculating feature importance for implemented models.
+    \item Local-agnostic: Visualise ICE plots for implemented models.
+    \item Model-evaluation: Calculate fairness scores for adult dataset on the implemented models.
+\end{itemize} 

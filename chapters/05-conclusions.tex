@@ -3,7 +3,7 @@
 
 \section{Summary of the thesis}
 
-There is no question that fairness is important to incorporate in machine learning and decision-making systems if one wants to have the benefits of automation while at the same time achieve equality and sustainability for a better world. While there exists many methods of achieving fairer systems, the field is still new and no state of the art exists. In this thesis, we have sought to investigate some current proposed methods for fair machine learning proposed in literature and try to shed some light on fairness in machine learning and what methods look promising or not. We have mainly focused on two approaches. The probabilistic Bayesian network approach and the fair tree classifier approach, which utilises two different methods for achieving fairness and also makes different assumptions. 
+There is no question that fairness is important to incorporate in machine learning and decision-making systems if one wants to have the benefits of automation while at the same time achieve equality and sustainability for a better world. Machine learning model fairness and interpretability are vital for data scientists, researchers and developers to explain their models and understand the value and accuracy of their findings. Interpretability is also important to debug machine learning models and make informed decisions about how to improve them. While there exists many methods of achieving fairer systems, the field is still new and no state of the art exists. In this thesis, we have sought to investigate some current proposed methods for fair machine learning proposed in literature and try to shed some light on fairness in machine learning and what methods look promising or not. We have mainly focused on two approaches. The probabilistic Bayesian network approach and the fair tree classifier approach, which utilises two different methods for achieving fairness and also makes different assumptions. 
 
 \subsection{Fair Bayesian Network}
 
@@ -13,7 +13,7 @@ The fair Bayesian network, proposed by \citet{Choi:2021:AIII}, which we have imp
     \item Training Data is biased
     \item The true fair class affiliation is a hidden attribute and must be inferred rather than measured.
     \item Demographic Parity is the definition of choice for fairness.
-    \item Sensitive attributes are important in the decision-making process as it contain necessary information of context.
+    \item Sensitive attributes are important in the decision-making process as they contain necessary information of context.
 \end{itemize}
 
 \subsection{Fair Tree Classifiers}
@@ -28,9 +28,9 @@ While the fair tree classifier makes the following assumptions
 
 \subsection{Approach}
 
-We have trained these models extensively on the Adult dataset and Compas dataset which are established datasets in fairness research. We have proposed new performance metrics that incorporate fairness and evaluated models in terms of this. To validate these new metrics, we have proposed new algorithms for generating datasets where we are in control of the bias in the data to further evaluate these metrics.
+We have trained these models extensively on the Adult dataset and COMPAS dataset which are established datasets in fairness research. We have proposed new performance metrics that incorporate fairness and evaluated models in terms of this. To validate these new metrics, we have proposed new algorithms for generating datasets where we are in control of the bias in the data to further evaluate these metrics.
 
-In addition to training models and evaluating them in terms is new proposed fairness measures, we have tried to explicitly explain and understand the behaviour of the models to validate that models satisfying fairness measures actually truly achieve fair behaviour. In addition we have implemented an genetic algorithm approach to generate counterfactual data points that highlight what attribute changes flip the outcome of an individual. Which gives a quite intuitive overview of the inner workings of the models.
+In addition to training models and evaluating them in terms is new proposed fairness measures, we have tried to explicitly explain and understand the behaviour of the models to validate that models satisfying fairness measures actually truly achieves fair behaviour. In addition we have implemented an genetic algorithm approach to generate counterfactual data points that highlight what attribute changes flip the outcome of an individual. Which gives a quite intuitive overview of the inner workings of the models.
 
 \section{Findings}
 
@@ -48,11 +48,11 @@ This shows that Demographic Parity as an performance metric might at first seem 
 
 \subsection{RQ1: What probabilistic graphical model is most appropriate to model the discrimination process?}
 
-We believe that we have demonstrated the power of graphical models through their intuitive design and graphical representation of their conditional probabilities and dependencies between variables make them fit for use for fair machine learning. Inferring latent class affiliations from datasets that are assumed to be biased is probably a quite reasonable assumption, and a necessary one to achieve fairness. Probabilistic Graphical Models may have a future as the model of choice when it comes to fair machine learning.
+We believe that we have demonstrated the power of graphical models through their intuitive design and graphical representation of their conditional probabilities and dependencies between variables to make them fit for use for fair machine learning. Inferring latent class affiliations from datasets that are assumed to be biased is probably a quite reasonable assumption, and a necessary one to achieve fairness. Probabilistic Graphical Models may have a future as the model of choice when it comes to fair machine learning.
 
 \subsection{RQ2: Are the proposed models explainable?}
 
-The proposed models are not fully interpretable. The fair random forest is not interpretable and given that the model does not use the sensitive attributes in it's predictions, it is hard to infer the inner workings and decision making of the model through model-agnostic interpretability methods. The fair Bayesian network is to a more extent interpretable, dependent on the complexity of the Bayesian network. In the case that the model is an naïve Bayes classifier it is quite intuitive for a human to understand how each attribute contribute to the outcome. As the complexity of the Bayesian network increases, this becomes more difficult. 
+The proposed models are not fully interpretable. The fair random forest is not interpretable and given that the model does not use the sensitive attributes in it's predictions, it is hard to infer the inner workings and decision making of the model through model-agnostic interpretability methods. The fair Bayesian network is to a more extent interpretable, dependent on the complexity of the Bayesian network. In the case that the model is an naïve Bayes classifier it is quite intuitive for a human to understand how each attribute contributes to the outcome. As the complexity of the Bayesian network increases, this becomes more difficult. 
 
 \subsection{RQ3: Are probabilistic machine learning models cost-effecitive?}
 
@@ -61,7 +61,7 @@ While we have not discussed this in detail, the biggest challenge to the probabi
 \section{Future Directions}
 \label{sec:conclusions:future}
 
-For future work, exploring new graphical models should be encouraged. The number of possible graphical models out there is vast and given the performance these can achieve this could lead to some interesting new models. Additionally, while inference in the graphical models used here is NP-Hard, sum-product networks do not suffer with this problem having very fast inference and probabilistic calculations. Implementing fair graphical models as sum-prouct networks and developing libraries for this could improve the ease of implementation as well as increase the cost-effectiveness of such models.
+For future work, exploring new graphical models should be encouraged. The number of possible graphical models out there is vast and given the performance these can achieve this could lead to some interesting new models. Additionally, while inference in the graphical models used here is NP-Hard, sum-product networks do not suffer with this problem having very fast inference and probabilistic calculations. Implementing fair graphical models as sum-product networks and developing libraries for this could improve the ease of implementation as well as increase the cost-effectiveness of such models.
 
 From our results we also see that demographic parity alone as a definition of fairness can lead to models having undesired behaviour. Investigating further definitions of fairness for machine learning should be in focus. If one would find a performance metric that truly achieve fairness, a lot of models could very quickly be adapted to incorporate fairness. 
 

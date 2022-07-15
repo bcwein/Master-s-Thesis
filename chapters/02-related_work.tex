@@ -1,33 +1,11 @@
-\chapter{Related Work}
+\chapter{Background and Related Work}
 \label{ch:related}
 
-One of the most important papers out there for getting to know the field of fairness in machine learning is the survey paper by \citet{Mehrabi:2021:CSUR}. This paper serves as a gateway to a lot of the current research in the field, a lot of which will be summarised in this section of the thesis.
-
-\section{Bias in Data}
-
-In Section~\ref{ch:intro} we discussed some sources of bias. Here we will go through more of them and in more detail. We have the following biases according to \citet{Mehrabi:2021:CSUR}:
-
-\subsection{Historical Bias}
-
-Historical Bias is the already existing bias and sociotechnical issues in the real word. These issues affect the data-generation process. So even given a perfect sampling method, the bias in the dataset will still exist. \cite{Suresh:2019:arXiv}
-
-\subsection{Representation Bias}
-
-This bias occurs as a by-product of the way we sample from the population. \cite{Suresh:2019:arXiv} Data collection is a non-trivial task and sampling a diverse dataset across large geographical regions and taking into account diversity in terms of race, culture, gender etc will in many cases not be possible. Still, the dataset will suffer from not representing the true distributions in the population.
-
-\subsection{Measurement Bias}
-
-This source of bias originates in the way the particular features were measured and utilised. \cite{Suresh:2019:arXiv} An example of this would be to use salary as a feature to assess risk of defaulting on a loan. This feature will be biased towards women since women has historically experienced having lower salaries than men.
-
-\subsection{Population Bias}
-
-Population bias arises when the sampled population have different properties than the original target population. \cite{Olteanu:2019:FDATA} An example of this would be to sample data from different social media platforms, which have different user demographics. I.e., men using Reddit and women using Instagram.
-
-And there are many other sources of bias, and some of these are very hard to avoid. It is reasonable to assume that most available datasets today are biased, which makes the approach described in Section~\ref{sec:probmac} important.
+One of the most cited and comprehensive articles out there for getting to know the field of fairness in machine learning is the survey paper by \citet{Mehrabi:2021:CSUR}. This paper elaborates numerous concerns about the fairness of the models’ outputs. It serves as a gateway to a lot of the current research in the field, a lot of which will be summarised in this section of the thesis.
 
 \section{Algorithmic Fairness}
 
-Many definitions of discrimination exist, and while there is no gold-standard, it is often defined as an absence of any prejudice or favouritism towards individuals or groups based on some intrinsic traits. \cite{Mehrabi:2021:CSUR, Nripsuta:2019:AIES} These definitions are core in the many mathematical definitions of fairness. Some of these are summarised below
+Many definitions of discrimination exist, and while there is no gold-standard, it is often defined as an absence of any prejudice or favouritism towards individuals or groups based on some intrinsic traits \cite{Mehrabi:2021:CSUR, Nripsuta:2019:AIES}. These definitions are core in the many mathematical definitions of fairness. Some of these are summarised below
 
 \textbf{Equalized Odds}: According to \citet{Mehrabi:2021:CSUR, Hardt:2016:NIPS} A predictor $\hat{Y}$ satisfies equalised odds with respect to a sensitive attribute $A$ and outcome $Y$ if $\hat{Y}$ and $A$ are conditionally independent on $Y$. i.e.
 
@@ -48,12 +26,12 @@ Many definitions of discrimination exist, and while there is no gold-standard, i
     \label{eq:dempar}
 \end{equation}
 
-And many more metrics exist. A challenge is that according to \citet{Mehrabi:2021:CSUR, Kleinberg:2017:LIPIcs} it is impossible to satisfy some of these fairness constraints. One should therefore be considerate when using a certain metric. Synthesising these definitions to one gold-standard remains an open research question. For this thesis. Demographic parity is especially important as it is fundamental to the model described in Section~\ref{sec:paper1}.
+And many more metrics exist. A challenge is that according to \citet{Mehrabi:2021:CSUR, Kleinberg:2017:LIPIcs} it is impossible to satisfy some of these fairness constraints. One should therefore be considerate when using a certain metric. Synthesising these definitions to one gold-standard remains an open RQ. For this thesis. Demographic parity is especially important as it is fundamental to the model described in Section~\ref{sec:paper1}.
 
 \textbf{Strong Demographic Parity}: According to \citet{Antonio:2021:arXiv}, this is a parity score that extends demographic parity by considering fairness throughout the entire range of possible decision thresholds. It was proposed by \citet{Jiang:2020:PMLR}. When learning a fair classifier to satisfy strong demographic parity, the predictor $\hat{Y}$ must satisfy demographic parity for any threshold $t$ and sensitive attribute $A$
 
 $$
-\forall t \in \hat{Y} : P(\hat{Y} \geq t | A = 0) = P(\hat \geq t | A = 1)
+\forall t \in \hat{Y} : P(\hat{Y} \geq t | A = 0) = P(\hat{Y} \geq t | A = 1)
 $$
 
 This assumes that the model output $\hat{Y}$ is a probability or score of belonging to the class of interest and $t$ is a selected threshold for classifying.
@@ -62,7 +40,7 @@ This assumes that the model output $\hat{Y}$ is a probability or score of belong
 
 Machine Learning is a large domain, encompassing many subdomains. These include \textit{Classification, Regression, PCA, Clustering, Deep Learning} and many more. In this thesis, the focus will be on fair classification. 
 
-\textit{Fair Classification:} Some of the most important work in the field of fair classification, summarised by \cite{Mehrabi:2021:CSUR}. Some important previous work for this thesis is the naïve Bayes approach for fair classification by \citet{Calders:20210:DMKD} In this work the authors investigated how to modify the naïve Bayes classifier in order to perform classification that is independent of the sensitive attributes. In this paper they measure discrimination by \textit{discrimination score} which is defined as
+\textit{Fair Classification:} Some of the most important works in the field of fair classification are summarised by \cite{Mehrabi:2021:CSUR}. Of special importance for this thesis is the naïve Bayes approach for fair classification by \citet{Calders:20210:DMKD} In this work the authors investigated how to modify the naïve Bayes classifier in order to perform classification that is independent of the sensitive attributes. In this paper they measure discrimination by \textit{discrimination score} which is defined as
 
 \begin{equation*}
     P(C=+|S_+) - P(C=+|S_-)
@@ -143,7 +121,7 @@ And we have a full distribution of model parameters, which gives us insight into
 
 \section{Graphical Models}
 
-A graphical model is a way to represent a joint probability distribution. Nodes represent random variables and the edges between the random variables represent dependencies, and the lack of edges means the random variables are conditionally independent. \cite[p.~308]{Murphy:2012:Book} There are many graphical models, and all of them tie probability theory and graph theory together comprehensively. We describe some different models in this section.
+A graphical model is a way to represent a joint probability distribution. Nodes represent random variables and the edges between the random variables represent dependencies, and the lack of edges means the random variables are conditionally independent \cite[p.~308]{Murphy:2012:Book}. There are many graphical models, and all of them tie probability theory and graph theory together comprehensively. We describe some different models in this section.
 
 \section{Bayesian Networks}
 
@@ -224,7 +202,7 @@ Which is not computable, as $\boldsymbol{Z}$ is unknown. Therefore the expectati
     Q(\boldsymbol{\theta, \theta^{\text{old}}}) = E[\log L(\boldsymbol{\theta}; \boldsymbol{X}, \boldsymbol{Z})]
 \end{equation*}
 
-In the M step we optimise $Q$ wrt $\boldsymbol{\theta}$
+In the M step we optimise $Q$ w.r.t. $\boldsymbol{\theta}$
 
 \begin{equation*}
     \boldsymbol{\theta^{\text{new}}} = \argmax_{\boldsymbol{\theta}} Q(\boldsymbol{\theta, \theta^{\text{old}}})
@@ -232,9 +210,9 @@ In the M step we optimise $Q$ wrt $\boldsymbol{\theta}$
 
 this is done iteratively until a certain threshold is achieved. For more details on how exactly this is implemented in pgmpy, see the documentation.\footnote{\url{https://pgmpy.org/_modules/pgmpy/estimators/EM.html\#ExpectationMaximization}}
 
-\section{Modeling Discrimination Process}
+\section{Modelling Discrimination Process}
 \label{sec:paper1}
-Now that probabilistic machine learning and graphical models have been introduced, it is time to introduce the work of \citet{Choi:2021:AIII} in more detail. As discussed previously in this section. There are many sources of bias in data and it is reasonable to assume that almost all datasets out there is biased. \citet{Choi:2021:AIII} describes a way of learning fair probability distributions from biased data by explicitly modeling a latent variable that represents a hidden, unbiased label. In particular, they aim to achieve demographic parity by enforcing
+Now that probabilistic machine learning and graphical models have been introduced, it is time to introduce the work of \citet{Choi:2021:AIII} in more detail. As discussed previously in this section. There are many sources of bias in data and it is reasonable to assume that almost all datasets out there is biased \citet{Choi:2021:AIII}. describes a way of learning fair probability distributions from biased data by explicitly modelling a latent variable that represents a hidden, unbiased label. In particular, they aim to achieve demographic parity by enforcing
 certain independencies in the learned model.
 
 \begin{figure}[h!]
@@ -262,13 +240,13 @@ The paper states that any probabilistic model can be used but that this model ne
 \section{Fair Tree Classifier}
 \label{sec:fairtree}
 
-The paper by \citet{Antonio:2021:arXiv} has been implemented in this thesis and the related python module. They introduce a new splitting criterion that evaluates splits in terms of the Area under curve (AUC) wrt the predicted value and the sensitive attribute. Assume that we want to learn a classifier $f$ that learns a mapping from features $X$ and predictor $\hat{Y}$ which outputs a probability of belonging to the predicted class
+The paper by \citet{Antonio:2021:arXiv} has been implemented in this thesis and the related python module. They introduce a new splitting criterion that evaluates splits in terms of the Area under curve (AUC) w.r.t. the predicted value and the sensitive attribute. Assume that we want to learn a classifier $f$ that learns a mapping from features $X$ and predictor $\hat{Y}$ which outputs a probability of belonging to the predicted class
 
 $$
 f: X \rightarrow \hat{Y}
 $$
 
-The AUC for this predictor wrt the true labels $Y$ can be calculated as
+The AUC for this predictor w.r.t. the true labels $Y$ can be calculated as
 
 \begin{equation*}
     AUC_Y(\hat{Y}, Y) =  \frac
@@ -280,13 +258,13 @@ The AUC for this predictor wrt the true labels $Y$ can be calculated as
     }
 \end{equation*}
 
-where $Y_-$ and $Y_+$ are the set of indexes for negative and positive instances in the true labels. $\textbf{1}$ denotes the indicator function. The authors calculate the AUC score for the predicted labels this using scikit-learn \cite{Pedregosa:2011:JMLR} and the method called roc\_auc\_score \cite{Buitinck:2013:PKDD}. When calculating the AUC wrt the sensitive attribute, denoted $AUC_s$ the authors have derived the following formula
+where $Y_-$ and $Y_+$ are the set of indexes for negative and positive instances in the true labels. $\textbf{1}$ denotes the indicator function. The authors calculate the AUC score for the predicted labels using scikit-learn \cite{Pedregosa:2011:JMLR} and the method called roc\_auc\_score \cite{Buitinck:2013:PKDD}. When calculating the AUC w.r.t. the sensitive attribute, denoted $AUC_s$ the authors have derived the following formula
 
 \begin{equation}
     AUC(\hat{Y}, S) = \max(1 - AUC(\hat{Y}, S), AUC(\hat{Y}, S))
 \end{equation}
 
-The max operator maps the bounds to the range $[0.5, 1]$. The authors then introduce the splitting criterion used in their tree algorihm, Splitting Criterion AUC for Fairness (SCAFF). Which is calculated as
+The max operator maps the bounds to the range $[0.5, 1]$. The authors then introduce the splitting criterion used in their tree algorithm, Splitting Criterion AUC for Fairness (SCAFF). Which is calculated as
 
 \begin{equation*}
     SCAFF(\hat{Y}, Y, S, \Theta) = (1 - \Theta) \cdot AUC_Y(\hat{Y}, Y) - \Theta \cdot AUC_S(\hat{Y}, S)
@@ -296,9 +274,9 @@ $\Theta$ is here a hyperparameter of the tree classifier. When $\Theta = 1$ spli
 
 \section{Interpretable Machine Learning}
 
-Up until this point in the thesis, we have discussed fair machine learning models and sources of bias in the data. Another important field in machine learning that is important regarding fairness is Interpretable Machine Learning. Many methods for fairness rely on either pre-processing of the datasets to make the datasets more fair or in-processing methods that change the machine learning algorithm to reduce discrimination during training. \cite{Mehrabi:2021:CSUR} 
+Up until this point in the thesis, we have discussed fair machine learning models and sources of bias in the data. Another important field in machine learning that is important regarding fairness is Interpretable Machine Learning. Many methods for fairness rely on either pre-processing of the datasets to make the datasets more fair or in-processing methods that change the machine learning algorithm to reduce discrimination during training \cite{Mehrabi:2021:CSUR}.
 
-Interpretable Machine Learning methods instead focus on understanding the mechanisms behind the decision that the machine learning model makes. This way, we can investigate how the machine learning model uses the data to make a prediction. According to \citet{Miller:2019:AIJ} interpretability is how well a human could understand the decisions in the given context. The higher the interpretability of a machine learning model, the easier it is for someone to comprehend why certain decisions or predictions have been made. \cite{Molnar:2020:Book}
+Interpretable Machine Learning methods instead focus on understanding the mechanisms behind the decision that the machine learning model makes. This way, we can investigate how the machine learning model uses the data to make a prediction. According to \citet{Miller:2019:AIJ} interpretability is how well a human could understand the decisions in the given context. The notion of interpretability is domain-specific and depends on the purpose of the interpretable component in the first place. The higher the interpretability of a machine learning model, the easier it is for someone to comprehend why certain decisions or predictions have been made \cite{Molnar:2020:Book}.
 
 \subsection{Example of interpretability}
 

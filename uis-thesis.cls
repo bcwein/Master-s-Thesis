@@ -4,6 +4,8 @@
 %%
 %% Created by Steve R. Gunn, modified by Sunil Patel: www.sunilpatel.co.uk
 
+\usepackage[nodayofweek,level]{datetime}
+
 \NeedsTeXFormat{LaTeX2e}[1996/12/01]
 \ProvidesClass{uis-thesis}
               [2007/22/02 v1.0
@@ -37,6 +39,8 @@
 \vfil\vfil\null
 %\cleardoublepage
 }
+
+\newcommand{\mydate}{\formatdate{7}{7}{2022}}
 
 \newcommand\btypeout[1]{\bhrule\typeout{\space #1}\bhrule}
 % \def\today{\number\day\space\ifcase\month\or
@@ -227,15 +231,6 @@
       \bigskip
       {\large External Supervisors \par}
       {\LARGE Rajendra Akerkar \par}
- 
-
-      \bigskip
-      \bigskip
-      \bigskip 
-      {\large Reviewers \par}
-      {\LARGE Reviewer 1 \par}
-      {\LARGE Reviewer 2 \par}
-      {\LARGE \par}
       
       %\vfill
       %{\large A thesis submitted in partial fulfillment for the \par}
@@ -250,7 +245,7 @@
       \bigskip
       \bigskip
       \bigskip
-      {\Large \today \par}
+      {\Large \mydate \par}
       \bigskip
     \end{center}
     \par

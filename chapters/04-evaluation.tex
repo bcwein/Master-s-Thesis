@@ -2,8 +2,7 @@
 \chapter{Experimental Evaluation}
 \label{ch:eval}
 
-\section{Data Exploration}
-\subsection{Adult Dataset}
+\section{Adult Dataset Data Exploration}
 \label{sec:adult}
 
 \begin{itemize}
@@ -11,7 +10,7 @@
     \item Work class: The sector the individual works in (8 Categories)
     \item fnlgwgt: A weight determined by the census bureau (Positive integer)
     \item Education: Highest educational degree (16 categories)
-    \item Educaitional-num: Enumerated education (16 categories)
+    \item Educational-num: Enumerated education (16 categories)
     \item Marital Status: Marital status of individual (7 Categories)
     \item Occupation: General type of occupation (15 categories)
     \item Relationship: What kind of relationship the individual is to others (6 categories)
@@ -25,7 +24,7 @@
 
 This dataset consists of mostly categorical attributes which are not ordinal. This makes analysis quite challenging. Many models assume Gaussian distributions, which is not present in the dataset. In this dataset, there are also some sensitive attributes, most notably \emph{Gender} and \emph{Race}. One could also argue that \emph{Marital Status} and \emph{Relationship} could also be sensitive attributes.
 
-In a fair machine learning system, we would expect that the outcome in terms of income does not depend on the race, gender, marital status or relationship or the very least that the decision by the model is independent of the sensitive attributes.
+In a fair machine learning system, we would expect that the outcome in terms of income does not depend on the race, gender, marital status or relationship or at the very least that the decision by the model is independent of the sensitive attributes.
 
 \subsection{Attributes correlated with income}
 
@@ -105,11 +104,11 @@ Below we will go through the different results of the first round of experiments
 
 \subsection{Fair Bayesian Network}
 
-After training the fair Bayesian network classifier on the adult and Compas dataset, we get an intersectional parity score of $0.87$ and $0.91$ respectively. This is better than the inherent parity score in the dataset labels, which is $0.81$ and $0.51$ respectively. These results and how the different methods compare to one another is shown in figure~\ref{fig:exp1fairBNparity}.
+After training the fair Bayesian network classifier on the adult and COMPAS dataset, we get an intersectional parity score of $0.87$ and $0.91$ respectively. This is better than the inherent parity score in the dataset labels, which is $0.81$ and $0.51$ respectively. These results and how the different methods compare to one another is shown in figure~\ref{fig:exp1fairBNparity}.
 
 In terms of accuracy and traditional performance of the model, we observe that there is a tradeoff between performance and fairness. This is best shown in the ROC curve shown in figure~\ref{fig:exp1fairBNROC}. There is a slight drop in the fair Bayesian network compared to the naïve Bayes method.
 
-We also observe a quite significant performance difference between the adult dataset and the Compas dataset. Why this is is not explored further in this thesis, as we are interested in seeing differences in performance with respect to fairness.  
+We also observe a quite significant performance difference between the adult dataset and the COMPAS dataset. Why this is is not explored further in this thesis, as we are interested in seeing differences in performance with respect to fairness.  
 \begin{figure}
     \centering
     \includegraphics[width=0.49\linewidth]{figures/adult_fairbn_roc.png}
@@ -120,7 +119,7 @@ We also observe a quite significant performance difference between the adult dat
 
 \subsection{Fair Random Forest Classifier}
 
-We ran the same experiments using their classifier on the adult dataset and Compas dataset. Rather interestingly, we do not observe any improvement in intersectional parity in the adult dataset for any of the methods, with the inherent intersectional parity for the dataset being $0.810$ and the best fair random forest classifier with $\Theta = 0.3$ having an intersectional parity of $0.78$, which is counterintuitive to the claimed meaning behind the hyperparameter $\Theta$ stated by the authors.
+We ran the same experiments using their classifier on the adult dataset and COMPAS dataset. Rather interestingly, we do not observe any improvement in intersectional parity in the adult dataset for any of the methods, with the inherent intersectional parity for the dataset being $0.810$ and the best fair random forest classifier with $\Theta = 0.3$ having an intersectional parity of $0.78$, which is counterintuitive to the claimed meaning behind the hyperparameter $\Theta$ stated by the authors.
 
 \begin{figure}
     \centering
@@ -130,7 +129,7 @@ We ran the same experiments using their classifier on the adult dataset and Comp
     \label{fig:exp1FRFCparity}
 \end{figure}
 
-For the Compas dataset, things are looking better with the models with $\Theta \in \{0.3, 0.7\}$ having higher intersectional parity scores than is inherent in the dataset labels. Still, the results given the stated meaning behind $\Theta$ is counterintuitive. The parity scores are shown in figure~\ref{fig:exp1FRFCparity}. The ROC curve for the different datasets is shown in figure~\ref{fig:exp1FRFCROC}
+For the COMPAS dataset, things are looking better with the models with $\Theta \in \{0.3, 0.7\}$ having higher intersectional parity scores than is inherent in the dataset labels. Still, the results given the stated meaning behind $\Theta$ is counterintuitive. The parity scores are shown in figure~\ref{fig:exp1FRFCparity}. The ROC curve for the different datasets is shown in figure~\ref{fig:exp1FRFCROC}
 
 \begin{figure}
     \centering
@@ -185,7 +184,7 @@ In terms of intersectional parity score, i.e. average demographic parity across 
     \label{fig:aucgender}
 \end{figure}
 
-In the paper by \citet{Antonio:2021:arXiv} they propose use AUC w.r.t. gender to evaluate splits which are more fair. Interestingly, while the fair random forest method is based on selecting splits that minimise the AUC w.r.t. gender, the model fares quite similarly to the Naïve Bayes models and LabelBN. See figure~\ref{fig:aucgender} The AUC is even higher than what is inherent in the labels of the dataset itself and predictions are in this sense more discriminatory than what is present in the true labels. The only model to minimise AUC more than the inherent dataset labels is FairBN. FairBN has a mean AUC of $0.56$ and a 5th percentile of $0.51$. While for the fair random forest classifier, these values are $0.72$ and $0.51$ respectively.
+In the paper by \citet{Antonio:2021:arXiv} they propose use AUC w.r.t. gender to evaluate splits which are more fair. Interestingly, while the fair random forest method is based on selecting splits that minimise the AUC w.r.t. gender, the model fares quite similarly to the Naïve Bayes models and incomeBN. See figure~\ref{fig:aucgender} The AUC is even higher than what is inherent in the labels of the dataset itself and predictions are in this sense more discriminatory than what is present in the true labels. The only model to minimise AUC more than the inherent dataset labels is FairBN. FairBN has a mean AUC of $0.56$ and a 5th percentile of $0.51$. While for the fair random forest classifier, these values are $0.72$ and $0.51$ respectively.
 
 \subsection{Kullback-Leibler Divergence}
 
@@ -268,7 +267,7 @@ To gain insight into how the decision tree uses the attributes in its decisions,
 
 On the adult dataset we see that the decision rules considers whether or not someone has a civilian spouse as the most important variable to consider when classifying someone as high income or not. No sensitive attributes are considered important and when investigating the tree structure, no nodes employ the sensitive attributes.
 
-\subsection{Decision Tree: Compas Dataset}
+\subsection{Decision Tree: COMPAS Dataset}
 
 \begin{table}[]
     \centering
@@ -285,11 +284,11 @@ On the adult dataset we see that the decision rules considers whether or not som
     6 &      juv\_fel\_count &    0.002624 \\
     \bottomrule
     \end{tabular}
-    \caption{Decision Tree: Compas Dataset - Feature Importance}
+    \caption{Decision Tree: COMPAS Dataset - Feature Importance}
     \label{tab:detreecompasimp}
 \end{table}
 
-On the other hand, when training the decision tree classifier on the compas dataset, we see that whether someone is male or considered to belong in the \emph{Other} race category is used in prediction. This implies that there is a significant gender and racial bias in the data.
+On the other hand, when training the decision tree classifier on the COMPAS dataset, we see that whether someone is male or considered to belong in the \emph{Other} race category is used in prediction. This implies that there is a significant gender and racial bias in the data.
 
 \subsection{Naive Bayes: Feature Importance}
 
@@ -301,13 +300,13 @@ On the other hand, when training the decision tree classifier on the compas data
     \label{fig:kldpermimpadult}
 \end{figure}
 
-To interpret the naïve Bayes models we look at the conditional distributions for the different attributes and compare calculate the KLD between the distribution $P = p(X|Y=0)$ and $Q = p(X|Y=1)$. We also calculate the permutation feature importance by calculating the loss in accuracy by permuting a specific column. The resulting weights are shown in figure~\ref{fig:kldpermimpadult} for the adult datasetn and figure~\ref{fig:kldpermimpcompas}.
+To interpret the naïve Bayes models we look at the conditional distributions for the different attributes and compare calculate the KLD between the distribution $P = p(X|Y=0)$ and $Q = p(X|Y=1)$. We also calculate the permutation feature importance by calculating the loss in accuracy by permuting a specific column. The resulting weights are shown in figure~\ref{fig:kldpermimpadult} for the adult dataset and figure~\ref{fig:kldpermimpcompas}.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.49\linewidth]{figures/KLDimportance-compas.png}
     \includegraphics[width=0.49\linewidth]{figures/permimportance-compas.png}
-    \caption{KLD and Permutation weights of naïve Bayes with and without sensitive attributes. Compas Dataset.}
+    \caption{KLD and Permutation weights of naïve Bayes with and without sensitive attributes. COMPAS Dataset.}
     \label{fig:kldpermimpcompas}
 \end{figure}
 
@@ -317,7 +316,7 @@ To interpret the naïve Bayes models we look at the conditional distributions fo
     \centering
     \includegraphics{figures/frfc-permimportance-adult.png}
     \includegraphics[width=\linewidth]{figures/fairbn-permimportance-adult.png}
-    \caption{Caption}
+    \caption{Feature importance for fair tree classifier on adult dataset}
     \label{fig:my_label}
 \end{figure}
 
@@ -325,7 +324,7 @@ We also calculate the feature importance of the fair tree classifier. We see a s
 
 \subsection{Individual Conditional Expectation}
 
-We have implemented ICE calculations for the classifiers Naive Bayes and Fair Tree Classifiers. As the sensitive attributes are not numerical but categorical, we do not resort to line plots of the predicted probability but rather categorical plots. Therefore, the distribution of predicted probability given the certain values is shown for the different models and datasets. Figure~\ref{fig:ICEdistgenderadult} shows how gender is treated by the different models in the Adult and Compas dataset. Figure~\ref{fig:ICEdistrace} show how race is treated by the different models.
+We have implemented ICE calculations for the classifiers Naive Bayes and Fair Tree Classifiers. As the sensitive attributes are not numerical but categorical, we do not resort to line plots of the predicted probability but rather categorical plots. Therefore, the distribution of predicted probability given the certain values is shown for the different models and datasets. Figure~\ref{fig:ICEdistgender} shows how gender is treated by the different models in the Adult and COMPAS dataset. Figure~\ref{fig:ICEdistrace} show how race is treated by the different models.
 
 \begin{figure}
     \centering
@@ -348,7 +347,7 @@ We have implemented ICE calculations for the classifiers Naive Bayes and Fair Tr
 
 \subsubsection{naïve Bayes With Sensitive Attributes}
 
-For the following datapoint:
+For the following data point:
 
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lllllllllll}
@@ -380,7 +379,7 @@ Got the following counterfactuals:
 
 \subsubsection{naïve Bayes Without Sensitive Attributes}
 
-For the following datapoint:
+For the following data point:
 
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lllllllllll}
